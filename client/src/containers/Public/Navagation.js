@@ -4,13 +4,14 @@ import { createSearchParams, NavLink, useSearchParams } from "react-router-dom";
 import * as actions from "../../store/actions";
 const notActive =
   "hover:bg-secondary2 h-full py-2 px-4 bg-secondary1 flex justify-center items-center";
-const active = "hover:bg-secondary2  h-full py-2 px-4 ";
+const active = "hover:bg-secondary2 visit   h-full py-2 px-4 ";
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.app);
   const [searchParams] = useSearchParams();
   const queryParams = Object.fromEntries([...searchParams]);
+  const categoryCode = queryParams.categoryCode;
 
   useEffect(() => {
     dispatch(actions.getCategories());
@@ -30,7 +31,9 @@ const Navigation = () => {
             return (
               <div
                 key={item.code}
-                className="h-full flex justify-center items-center"
+                className={`h-full flex justify-center items-center ${
+                  categoryCode === item.code ? "bg-red-500" : ""
+                }`}
               >
                 <NavLink
                   to={{
@@ -40,7 +43,6 @@ const Navigation = () => {
                       categoryCode: item.code,
                     }).toString(),
                   }}
-                  className={({ isActive }) => (isActive ? active : notActive)}
                 >
                   {item.value}
                 </NavLink>

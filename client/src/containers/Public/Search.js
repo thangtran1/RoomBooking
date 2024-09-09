@@ -25,9 +25,8 @@ const Search = () => {
   const [isShowModal, setIsShowModal] = useState(false);
 
   const [searchParams] = useSearchParams();
-  console.log("🚀 ~ Search ~ searchParams:", searchParams);
+
   const queryParams = Object.fromEntries([...searchParams]);
-  console.log("🚀 ~ Search ~ queryParams:", queryParams);
 
   const [content, setContent] = useState([]);
   const [name, setName] = useState("");

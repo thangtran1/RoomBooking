@@ -1,59 +1,88 @@
-import React, { useEffect, useState } from 'react'
-import { PageNumber } from '../../components'
-import { useSelector } from 'react-redux'
-import icons from '../../ultils/icons'
+import React, { useEffect, useState } from "react";
+import { PageNumber } from "../../components";
+import { useSelector } from "react-redux";
+import icons from "../../ultils/icons";
 
-const { GrLinkNext, GrLinkPrevious } = icons
+const { GrLinkNext } = icons;
 
 const Pagination = ({ page, totalItems, setPage, limit }) => {
-    // Tính tổng số trang dựa trên tổng số item và limit
-    const totalPages = Math.ceil(totalItems / limit)
+  const totalPages = Math.ceil(totalItems / limit);
+  const [arrPage, setArrPage] = useState([]);
+  const [isHideStart, setIsHideStart] = useState(false);
+  const [isHideEnd, setIsHideEnd] = useState(false);
+  const currentPage = +page;
 
-    const [arrPage, setArrPage] = useState([])
-    const [isHideStart, setIsHideStart] = useState(false)
-    const [isHideEnd, setIsHideEnd] = useState(false)
-    const currentPage = +page
+  useEffect(() => {
+    const validCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
 
-    useEffect(() => {
-        // Kiểm tra trang hiện tại không vượt quá tổng số trang
-        const validCurrentPage = currentPage > totalPages ? totalPages : currentPage
+    let start = validCurrentPage - 1;
+    let end = validCurrentPage + 1;
 
-        let end = validCurrentPage + 1 > totalPages ? totalPages : validCurrentPage + 1
-        let start = validCurrentPage - 1 <= 0 ? 1 : validCurrentPage - 1
-        let temp = []
-
-        for (let i = start; i <= end; i++) temp.push(i)
-        setArrPage(temp)
-
-        setIsHideEnd(validCurrentPage >= totalPages - 1)
-        setIsHideStart(validCurrentPage <= 2)
-    }, [totalItems, limit, currentPage, totalPages])
-
-    const handleChangePage = (page) => {
-        setPage(page)
+    if (totalPages <= 4) {
+      start = 1;
+      end = totalPages;
+    } else {
+      if (validCurrentPage === 1) {
+        start = 1;
+        end = Math.min(2, totalPages);
+      } else if (validCurrentPage === 2) {
+        start = 1;
+        end = 3;
+      } else if (validCurrentPage >= totalPages - 1) {
+        start = totalPages - 2;
+        end = totalPages;
+      } else {
+        start = validCurrentPage - 1;
+        end = validCurrentPage + 1;
+      }
     }
 
-    return (
-        <div className='flex items-center justify-center gap-2 py-5'>
-            {!isHideStart && (
-                <PageNumber icon={<GrLinkPrevious />} setCurrentPage={handleChangePage} text={1} />
-            )}
-            {!isHideStart && <PageNumber text={'...'} />}
+    let temp = [];
+    for (let i = start; i <= end; i++) temp.push(i);
+    setArrPage(temp);
 
-            {arrPage.length > 0 && arrPage.map(item => (
-                <PageNumber
-                    key={item}
-                    text={item}
-                    setCurrentPage={handleChangePage}
-                    currentPage={currentPage}
-                />
-            ))}
-            {!isHideEnd && <PageNumber text={'...'} />}
-            {!isHideEnd && (
-                <PageNumber icon={<GrLinkNext />} setCurrentPage={handleChangePage} text={totalPages} />
-            )}
-        </div>
-    )
-}
+    setIsHideStart(validCurrentPage <= 2);
+    setIsHideEnd(validCurrentPage >= totalPages - 1);
+  }, [totalItems, limit, currentPage, totalPages]);
 
-export default Pagination
+  const handleChangePage = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setPage(page);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center gap-2 py-5">
+      {!isHideStart && (
+        <>
+          <PageNumber setCurrentPage={handleChangePage} text={1} />
+          {arrPage[0] > 2 && <PageNumber text={"..."} />}
+        </>
+      )}
+
+      {arrPage.map((item) => (
+        <PageNumber
+          key={item}
+          text={item}
+          setCurrentPage={handleChangePage}
+          currentPage={currentPage}
+        />
+      ))}
+
+      {!isHideEnd && (
+        <>
+          {arrPage[arrPage.length - 1] < totalPages - 1 && (
+            <PageNumber text={"..."} />
+          )}
+          <PageNumber
+            icon={<GrLinkNext />}
+            setCurrentPage={handleChangePage}
+            text={totalPages}
+          />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Pagination;

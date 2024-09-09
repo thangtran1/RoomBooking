@@ -8,7 +8,7 @@ router.get("/", postController.getAllPosts);
 router.get("/all", postController.getPosts);
 
 // phân trang
-router.get("/limit", postController.getPostsLimit);
+router.get("/aaa", postController.getPostsLimit);
 
 router.get("/new-post", postController.getNewPosts);
 

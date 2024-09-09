@@ -1,6 +1,5 @@
 import { Op } from "sequelize";
 import db from "../models";
-
 export const getPostsService = () =>
   new Promise(async (resolve, reject) => {
     try {
@@ -31,21 +30,29 @@ export const getPostsService = () =>
 export const getPostsLimitService = (
   page,
   query,
+
   limit,
-  { pricesNumber, areasNumber }
+  priceNumber,
+
+  areaNumber
 ) =>
   new Promise(async (resolve, reject) => {
-    console.log({ pricesNumber, areasNumber });
-
+    console.log("priceNumner: ", priceNumber);
+    console.log("areaNumber: ", areaNumber);
     try {
       const queries = { ...query };
-      if (pricesNumber) queries.pricesNumber = { [Op.between]: pricesNumber };
-      if (areasNumber) queries.areasNumber = { [Op.between]: areasNumber };
 
+      // if (priceNumber) queries.priceNumber = { [Op.between]: priceNumber };
+      // if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
+
+      if (priceNumber && priceNumber.length === 2)
+        queries.priceNumber = { [Op.between]: priceNumber };
+      if (areaNumber && areaNumber.length === 2)
+        queries.areaNumber = { [Op.between]: areaNumber };
       const response = await db.Post.findAndCountAll({
         where: queries,
         raw: true,
-        nest: true, // vd image.image => gộp thành 1 objec image: [...]
+        nest: true,
         offset: limit * (page - 1),
         limit: limit,
         include: [
@@ -106,28 +113,28 @@ export const getAllPosts = async (query) => {
   const categoryCode = query.categoryCode;
   const provinceCode = query.provinceCode;
 
-  const priceMin = query.priceMin;
-  const priceMax = query.priceMax;
+  // const priceMin = query.priceMin;
+  // const priceMax = query.priceMax;
 
   const wherePrice = {};
   const whereArea = {};
   const whereCategory = {};
   const whereProvince = {};
 
-  if (priceMin) wherePrice[Op.gte] = priceMin;
-  if (priceMax) wherePrice[Op.lte] = priceMax;
+  // if (priceMin) wherePrice[Op.gte] = priceMin;
+  // if (priceMax) wherePrice[Op.lte] = priceMax;
 
   if (areaCode) {
     whereArea.code = areaCode;
+  }
+  if (priceCode) {
+    wherePrice.code = priceCode;
   }
   if (categoryCode) {
     whereCategory.code = categoryCode;
   }
   if (provinceCode) {
     whereProvince.code = provinceCode;
-  }
-  if (priceCode) {
-    wherePrice.code = priceCode;
   }
 
   try {
@@ -136,9 +143,9 @@ export const getAllPosts = async (query) => {
       nest: true, // vd image.image => gộp thành 1 objec image: [...]
       offset: limit * (page - 1),
       limit: limit,
-      where: {
-        priceNumber: { [Op.and]: wherePrice },
-      },
+      // where: {
+      //   priceNumber: { [Op.and]: wherePrice },
+      // },
       include: [
         { model: db.Image, as: "images", attributes: ["image"] },
         { model: db.Category, as: "category", where: whereCategory },

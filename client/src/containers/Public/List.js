@@ -22,7 +22,6 @@ const List = ({ posts, categoryCode }) => {
         searchParamsObject = { ...searchParamsObject, [i[0]]: [i[1]] };
       }
     });
-    console.log("🚀 ~ useEffect ~ searchParamsObject:", searchParamsObject);
 
     if (categoryCode) searchParamsObject.categoryCode = categoryCode;
 

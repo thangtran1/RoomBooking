@@ -1,5 +1,6 @@
 import * as postService from "../services/post";
 
+import { getPostsLimitService } from "../services/post";
 export const getPosts = async (req, res) => {
   try {
     const response = await postService.getPostsService();
@@ -14,12 +15,17 @@ export const getPosts = async (req, res) => {
 };
 
 export const getPostsLimit = async (req, res) => {
-  const { page, pricesNumber, areasNumber, ...query } = req.query;
+  const { page = 1, limit = 10, priceNumber, areaNumber, ...query } = req.query;
+
   try {
-    const response = await postService.getPostsLimitService(page, query, {
-      pricesNumber,
-      areasNumber,
-    });
+    const response = await getPostsLimitService(
+      page,
+      query,
+      limit,
+      priceNumber,
+      areaNumber
+    );
+
     return res.status(200).json(response);
   } catch (e) {
     console.error("Error details:", e);
