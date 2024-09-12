@@ -1,20 +1,22 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import removeBgLogo from "../../assets/logo-removebg-preview.png";
-import { Button } from "../../components";
+import { Button, Use } from "../../components";
 import icons from "../../ultils/icons";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { path } from "../../ultils/constant";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../store/actions";
-import { useRef, useEffect } from "react";
-const { AiOutlinePlusCircle } = icons;
+import menuManage from "../../ultils/menuManage";
+
+const { AiOutlinePlusCircle, AiOutlineLogout, BsChevronDown } = icons;
 
 const Header = ({ page }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
 
+  const [isShowMenu, setIsShowMenu] = useState(false);
   const goLogin = useCallback((flag) => {
     navigate(path.LOGIN, { state: { flag } });
   }, []);
@@ -57,14 +59,42 @@ const Header = ({ page }) => {
           )}
 
           {isLoggedIn && (
-            <div className="flex items-center gap-1">
-              <small>Tên !</small>
+            <div className="flex items-center gap-3 relative">
+              <Use />
               <Button
-                text={"Đăng xuất"}
+                text={"Quản lý tài khoản"}
                 textColor="text-white"
-                bgColor="bg-red-700"
-                onClick={() => dispatch(actions.logout())}
+                bgColor="bg-blue-700"
+                px="px-4"
+                IcAfter={BsChevronDown}
+                onClick={() => setIsShowMenu((prev) => !prev)}
               />
+              {isShowMenu && (
+                <div className="absolute min-w-200  top-full bg-white shadow-md rounded-md p-4 right-0 flex flex-col ">
+                  {menuManage.map((item) => {
+                    return (
+                      <Link
+                        className="flex items-center gap-2 hover:text-orange-500 text-blue-600 border-b border-gray-200 py-2"
+                        key={item.id}
+                        to={item?.path}
+                      >
+                        {item?.icon}
+                        {item.text}
+                      </Link>
+                    );
+                  })}
+                  <span
+                    className="cursor-pointer flex items-center gap-2 hover:text-orange-500 text-blue-600 py-2"
+                    onClick={() => {
+                      setIsShowMenu(false);
+                      dispatch(actions.logout());
+                    }}
+                  >
+                    <AiOutlineLogout />
+                    Đăng xuất
+                  </span>
+                </div>
+              )}
             </div>
           )}
           <Button

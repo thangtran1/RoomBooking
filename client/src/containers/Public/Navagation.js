@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSearchParams, NavLink, useSearchParams } from "react-router-dom";
+import {
+  createSearchParams,
+  NavLink,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import * as actions from "../../store/actions";
-const notActive =
-  "hover:bg-secondary2 h-full py-2 px-4 bg-secondary1 flex justify-center items-center";
-const active = "hover:bg-secondary2 visit   h-full py-2 px-4 ";
 
-const Navigation = () => {
+const Navigation = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.app);
   const [searchParams] = useSearchParams();
@@ -15,40 +17,41 @@ const Navigation = () => {
 
   useEffect(() => {
     dispatch(actions.getCategories());
-  }, []);
+  }, [dispatch]);
 
   return (
-    <div className="w-full flex justify-around items-center h-[40px]  bg-secondary1 text-white">
-      <div className="w-3/5 h-full flex items-center  text-sm font-medium ">
+    <div
+      className={`w-full flex ${
+        isAdmin ? "justify-start" : "justify-center"
+      } items-center h-[40px] bg-secondary1 text-white`}
+    >
+      <div className="w-3/5 h-full flex items-center text-sm font-medium">
         <NavLink
-          to={`/`}
-          className={({ isActive }) => (isActive ? active : notActive)}
+          to="/"
+          className={`hover:bg-secondary2 h-full py-2 px-4 ${
+            !categoryCode ? "bg-secondary2" : "bg-secondary1"
+          }`}
         >
           Trang chủ
         </NavLink>
         {categories?.length > 0 &&
-          categories.map((item) => {
-            return (
-              <div
-                key={item.code}
-                className={`h-full flex justify-center items-center ${
-                  categoryCode === item.code ? "bg-red-500" : ""
-                }`}
-              >
-                <NavLink
-                  to={{
-                    pathname: "/",
-                    search: createSearchParams({
-                      ...queryParams,
-                      categoryCode: item.code,
-                    }).toString(),
-                  }}
-                >
-                  {item.value}
-                </NavLink>
-              </div>
-            );
-          })}
+          categories.map((item) => (
+            <NavLink
+              key={item.code}
+              to={{
+                pathname: "/",
+                search: createSearchParams({
+                  ...queryParams,
+                  categoryCode: item.code,
+                }).toString(),
+              }}
+              className={`hover:bg-secondary2 h-full py-2 px-4 ${
+                categoryCode === item.code ? "bg-secondary2" : "bg-secondary1"
+              }`}
+            >
+              {item.value}
+            </NavLink>
+          ))}
       </div>
     </div>
   );

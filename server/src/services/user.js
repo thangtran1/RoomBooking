@@ -15,7 +15,7 @@ export const getOne = (id) =>
       });
       resolve({
         err: response ? 0 : 1,
-        msg: response ? "OK" : "Failed to get provinces.",
+        msg: response ? "OK" : "Failed to get user.",
         response,
       });
     } catch (e) {
