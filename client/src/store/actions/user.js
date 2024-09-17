@@ -15,6 +15,7 @@ export const getCurrent = () => async (dispatch) => {
         currentData: response.data?.msg || null,
         msg: response.data.msg,
       });
+      dispatch({ type: actionTypes.LOGOUT });
     }
   } catch (e) {
     dispatch({
@@ -22,5 +23,6 @@ export const getCurrent = () => async (dispatch) => {
       currentData: null,
       msg: e,
     });
+    dispatch({ type: actionTypes.LOGOUT });
   }
 };

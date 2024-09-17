@@ -4,9 +4,7 @@ import { Province, ItemSidebar, RelatedPost } from "../../components";
 import { List, Pagination } from "./index";
 import { useSearchParams } from "react-router-dom";
 import { getPosts } from "../../services/post";
-import { getPostsLimit } from "../../store/actions/post";
-import { useSelector, useDispatch } from "react-redux";
-import * as actions from "../../store/actions";
+import { useSelector } from "react-redux";
 
 const limit = 5;
 const Homepage = () => {
@@ -14,7 +12,11 @@ const Homepage = () => {
   const [postsData, setPostsData] = useState({ count: 0, rows: [] });
   const [page, setPage] = useState(1);
   const [searchParams] = useSearchParams();
-  const priceCode = searchParams.get("priceCode");
+  // const priceCode = searchParams.get("priceCode");
+
+  const priceMin = searchParams.get("priceMin");
+  const priceMax = searchParams.get("priceMax");
+
   const areaCode = searchParams.get("areaCode");
   const categoryCode = searchParams.get("categoryCode");
 
@@ -23,16 +25,16 @@ const Homepage = () => {
       const data = await getPosts({
         limit,
         page,
-        priceCode,
+        priceMax,
+        priceMin,
         areaCode,
         categoryCode,
       });
       setPostsData(data.data.response);
     };
     fetchData();
-  }, [page, limit, priceCode, areaCode, categoryCode]);
+  }, [page, priceMax, priceMin, areaCode, categoryCode]); //limit
 
-  // Tính tổng số trang
   const totalPages = Math.ceil(postsData.count / limit);
 
   return (
@@ -45,7 +47,6 @@ const Homepage = () => {
       <div className="w-full flex gap-4">
         <div className="w-[70%]">
           <List posts={postsData.rows} page={page} />
-          {/* Hiển thị Pagination chỉ khi có ít nhất một trang */}
           {totalPages > 1 && (
             <Pagination
               page={page}

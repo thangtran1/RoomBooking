@@ -4,7 +4,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import * as actions from "../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-
+import validate from "../../ultils/Common/validateField";
 const Login = () => {
   const [form] = Form.useForm();
   const location = useLocation();

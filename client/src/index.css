@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .star-item{
     display: inline-block;
     margin-bottom: 5px;
@@ -69,4 +71,31 @@ input[type="range"]::-ms-thumb{
     margin-top: -0.6rem;
     pointer-events: auto;
     cursor: pointer;
+}
+
+button.slick-arrow::before{
+font-size: 50px !important;
+color: yellow !important;
+}
+
+.slick-next {
+    right: 35px !important;
+    top: 45% !important;
+}
+.slick-prev {
+    left: 10px !important;
+    z-index: 10 !important;
+    top: 45% !important;
+
+}
+@keyframes slide-right {
+    0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    100% {
+        -webkit-transform: translateX(100px);
+        transform: translateX(100px); 
+    }
+    
 }

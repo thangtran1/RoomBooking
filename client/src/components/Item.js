@@ -1,8 +1,8 @@
 import React, { memo, useState } from "react";
 import icons from "../ultils/icons";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { path } from "../ultils/constant";
 import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
-const indexs = [0, 1, 2, 3];
 
 const { RiStarSLine, RiHeartFill, RiHeartLine, TfiStar, RiBookmark3Fill } =
   icons;
@@ -33,12 +33,15 @@ const Item = ({
   return (
     <div className="w-full flex border-t border-orange-600 py-4 ">
       <Link
-        to={`chi-tiet/${formatVietnameseToString(title)}/${id}`}
+        to={`${path.DETAIL}${formatVietnameseToString(
+          title?.replaceAll("/", "")
+        )}/${id}`}
         className="w-2/5 flex flex-wrap  gap-[2px] items-center relative cursor-pointer"
       >
         {images.length > 0 &&
           images
-            .filter((i, index) => indexs.some((i) => i === index))
+            // lấy 4 ảnh Arr(4)
+            .filter((i, index) => [...Array(4).keys()].some((i) => i === index))
             ?.map((i, index) => {
               return (
                 <img
@@ -65,13 +68,18 @@ const Item = ({
       </Link>
       <div className="w-3/5">
         <div className="flex justify-between gap-4 w-full">
-          <div className="text-red-600 font-medium ">
+          <Link
+            to={`${path.DETAIL}${formatVietnameseToString(
+              title?.replaceAll("/", "")
+            )}/${id}`}
+            className="text-red-600 font-medium "
+          >
             {handleStar(+star).length > 0 &&
               handleStar(+star).map((star, number) => {
                 return <span key={number}>{star}</span>;
               })}
             {title}
-          </div>
+          </Link>
           <div className="w-[10%] flex justify-end">
             <RiBookmark3Fill size={"25px"} color="orange" />
           </div>
@@ -103,18 +111,20 @@ const Item = ({
             <p>{user?.name}</p>
           </div>
           <div className="flex items-center gap-1">
-            <button
-              type="button"
-              className="bg-blue-700 text-white  p-1 rounded-md"
+            <a
+              href={`tel:${user?.phone}`}
+              target="_blank"
+              className="bg-blue-700 text-white p-1 rounded-md"
             >
               {`Gọi ${user?.phone}`}
-            </button>
-            <button
-              type="button"
+            </a>
+            <a
+              href={`https://zalo.me/${user?.zalo}`}
+              target="_blank"
               className="text-blue-700 px-1 rounded-md border border-blue-700"
             >
               Nhấn zalo
-            </button>
+            </a>
           </div>
         </div>
       </div>

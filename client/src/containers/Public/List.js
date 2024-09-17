@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from "react";
-import { Button, Item } from "../../components";
-import { getPosts, getPostsLimit } from "../../store/actions/post";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { Item } from "../../components";
+import { getPostsLimit } from "../../store/actions/post";
 
 const List = ({ posts, categoryCode }) => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  // const { posts } = useSelector(state => state.posts);
+  const [sort, setSort] = useState(0);
 
   useEffect(() => {
     let params = [];
@@ -25,8 +25,9 @@ const List = ({ posts, categoryCode }) => {
 
     if (categoryCode) searchParamsObject.categoryCode = categoryCode;
 
+    if (sort === 1) searchParamsObject.order = ["createdAt", "DESC"];
     dispatch(getPostsLimit(searchParamsObject));
-  }, [searchParams, categoryCode]);
+  }, [searchParams, categoryCode, sort]);
 
   return (
     <div className="w-full  p-2 bg-white shadow-md rounded-md px-5">
@@ -36,8 +37,22 @@ const List = ({ posts, categoryCode }) => {
       </div>
       <div className="flex items-center gap-2 my-2">
         <span>Sắp xếp: </span>
-        <Button bgColor="bg-gray-200" text="Mặc định " />
-        <Button bgColor="bg-gray-200" text="Mới nhất " />
+        <span
+          onClick={() => setSort(0)}
+          className={`bg-gray-200 cursor-pointer  p-2 rounded-md hover:underline ${
+            sort === 0 && "text-red-500"
+          } `}
+        >
+          Mặc định
+        </span>
+        <span
+          onClick={() => setSort(1)}
+          className={`bg-gray-200 cursor-pointer  p-2 rounded-md hover:underline ${
+            sort === 1 && "text-red-500"
+          } `}
+        >
+          Mới nhất
+        </span>
       </div>
       <div className="items">
         {posts?.length > 0 &&

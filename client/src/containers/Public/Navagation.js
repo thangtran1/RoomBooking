@@ -7,6 +7,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import * as actions from "../../store/actions";
+import { path } from "../../ultils/constant";
 
 const Navigation = ({ isAdmin }) => {
   const dispatch = useDispatch();
@@ -52,6 +53,12 @@ const Navigation = ({ isAdmin }) => {
               {item.value}
             </NavLink>
           ))}
+        <NavLink
+          to={path.CONTACT}
+          className={`hover:bg-secondary2 h-full py-2 px-4`}
+        >
+          Liên hệ
+        </NavLink>
       </div>
     </div>
   );

@@ -4,31 +4,31 @@ const InputForm = ({
   label,
   value,
   setValue,
+  keyPayload,
   type,
   invalidFields,
   setInvalidFields,
 }) => {
   return (
     <div>
-      <label htmlFor="phone" className="text-xs">
+      <label htmlFor={keyPayload} className="text-xs">
         {label}
       </label>
       <input
-        type={type}
-        id="phone"
+        type={type || "text"}
+        id={keyPayload}
         className="outline-none bg-[#e8f0f2] p-2 rounded-md w-full"
         value={value}
         onChange={(e) =>
-          setValue((prev) => ({ ...prev, [type]: e.target.value }))
+          setValue((prev) => ({ ...prev, [keyPayload]: e.target.value }))
         }
-        onFocus={() => setInvalidFields([])}
+        onFocus={() => setInvalidFields && setInvalidFields([])}
       />
-      {invalidFields.length > 0 &&
-        invalidFields.some((i) => i.name === type) && (
-          <small className="text-red-500 italic">
-            {invalidFields.find((i) => i.name === type)?.message}
-          </small>
-        )}
+      {invalidFields?.some((i) => i.name === keyPayload) && (
+        <small className="text-red-500 italic">
+          {invalidFields.find((i) => i.name === keyPayload)?.message}
+        </small>
+      )}
     </div>
   );
 };

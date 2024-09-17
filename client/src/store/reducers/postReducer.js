@@ -1,37 +1,60 @@
-import actionTypes from "../actions/actionType"
+import actionTypes from "../actions/actionType";
 const initState = {
-    posts: [],
-    msg: '',
-    count: 0,
-    newPost: [],
-}
+  posts: [],
+  msg: "",
+  count: 0,
+  newPosts: [],
+  postOfCurrent: [],
+  dataEdit: null,
+  outStandingPost: [],
+};
 
 const postReducer = (state = initState, action) => {
-    switch (action.type) {
-        case actionTypes.GET_POSTS_LIMIT:
-        case actionTypes.GET_POSTS:
-            return {
-                ...state,
-                posts: action.posts || [],
-                msg: action.msg || '',
-                count: action.count || 0
-            }
+  switch (action.type) {
+    case actionTypes.GET_POSTS_LIMIT:
+    case actionTypes.GET_POSTS:
+      return {
+        ...state,
+        posts: action.posts || [],
+        msg: action.msg || "",
+        count: action.count || 0,
+      };
 
-        case actionTypes.GET_NEW_POST:
-            return {
-                ...state,
+    case actionTypes.GET_NEW_POST:
+      return {
+        ...state,
+        msg: action.msg || "",
+        newPosts: action.payload || [],
+      };
+    case actionTypes.GET_OUTSTANDING:
+      return {
+        ...state,
+        msg: action.msg || "",
+        outStandingPost: action.outStandingPost || [],
+      };
 
-                msg: action.msg || '',
-                newPost: action.newPost || [],
-                // count: action.count || 0
-            }
+    case actionTypes.GET_POSTS_ADMIN:
+      return {
+        ...state,
+        msg: action.msg || "",
+        postOfCurrent: action.posts || [],
+      };
 
+    case actionTypes.EDIT_DATA:
+      return {
+        ...state,
+        dataEdit: action.dataEdit || null,
+      };
 
+    case actionTypes.RESET_DATAEDIT:
+      return {
+        ...state,
+        dataEdit: null,
+      };
 
+    default:
+      return state;
+  }
+};
 
-        default:
-            return state
-    }
-}
-
-export default postReducer
+export default postReducer;
