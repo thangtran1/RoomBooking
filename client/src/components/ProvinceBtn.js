@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import { path } from "../ultils/constant";
 
 const ProvinceBtn = ({ name, image, provinceCode }) => {
   const navigate = useNavigate();
@@ -8,7 +7,6 @@ const ProvinceBtn = ({ name, image, provinceCode }) => {
     const titleSearch = `Cho thuê  ${name}, Phòng trọ giá rẻ`;
     navigate(
       {
-        pathname: path.SEARCH,
         search: createSearchParams({ provinceCode }).toString(),
       },
       { state: { titleSearch } }

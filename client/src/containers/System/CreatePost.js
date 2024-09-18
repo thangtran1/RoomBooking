@@ -250,7 +250,7 @@ const CreatePost = ({ isEdit }) => {
         </div>
 
         <div className="w-[30%] flex-none pt-12">
-          <Map address={payload.address} />
+          {/* <Map address={payload.address} /> */}
           <div className="mt-8 bg-orange-100 text-orange-900 rounded-md p-4">
             <h4 className="text-xl font-medium mb-4">Lưu ý tin đăng</h4>
             <div>

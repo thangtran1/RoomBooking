@@ -27,13 +27,15 @@ const Modal = ({
   setIsShowModal,
   content,
   name,
-  handleSubmit,
-  queries,
   defaultText,
   price,
-  area,
   setPrice,
+  area,
   setArea,
+  category,
+  setCategory,
+  province,
+  setProvince,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = Object.fromEntries([...searchParams]);
@@ -67,7 +69,22 @@ const Modal = ({
           areaMax: area.areaMax,
         })
       );
+    } else if (name === "categories") {
+      setSearchParams(
+        createSearchParams({
+          ...queryParams,
+          categoryCode: category.code,
+        })
+      );
+    } else if (name === "provinces") {
+      setSearchParams(
+        createSearchParams({
+          ...queryParams,
+          provinceCode: province.code,
+        })
+      );
     }
+
     setIsShowModal(false);
   };
 
@@ -84,7 +101,7 @@ const Modal = ({
         </div>
 
         {/* Hiển thị categories hoặc provinces */}
-        {(name === "categories" || name === "provinces") && (
+        {name === "categories" && (
           <div className="p-4 flex flex-col">
             <span className="py-2 flex gap-2 items-center border-b border-gray-200">
               <input
@@ -92,13 +109,8 @@ const Modal = ({
                 id="default"
                 name={name}
                 value={defaultText || ""}
-                checked={!queries[`${name}Code`] ? true : false}
-                onChange={(e) =>
-                  handleSubmit(e, {
-                    [name]: defaultText,
-                    [`${name}Code`]: null,
-                  })
-                }
+                checked={category.code === ""}
+                onChange={(e) => setCategory({ code: "", label: "" })}
               />
               <label htmlFor="default">{defaultText}</label>
             </span>
@@ -112,12 +124,43 @@ const Modal = ({
                   name={name}
                   id={item.code}
                   value={item.code}
-                  checked={item.code === queries[`${name}Code`] ? true : false}
+                  checked={category.code === item.code}
                   onChange={(e) =>
-                    handleSubmit(e, {
-                      [name]: item.value,
-                      [`${name}Code`]: item.code,
-                    })
+                    setCategory({ code: e.target.value, label: item.value })
+                  }
+                />
+                <label htmlFor={item.code}>{item.value}</label>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {name === "provinces" && (
+          <div className="p-4 flex flex-col">
+            <span className="py-2 flex gap-2 items-center border-b border-gray-200">
+              <input
+                type="radio"
+                id="default"
+                name={name}
+                value={defaultText || ""}
+                checked={province.code === ""}
+                onChange={(e) => setProvince({ code: "", label: "" })}
+              />
+              <label htmlFor="default">{defaultText}</label>
+            </span>
+            {content?.map((item) => (
+              <span
+                key={item.code}
+                className="py-2 flex gap-2 items-center border-b border-gray-200"
+              >
+                <input
+                  type="radio"
+                  name={name}
+                  id={item.code}
+                  value={item.code}
+                  checked={province.code === item.code}
+                  onChange={(e) =>
+                    setProvince({ code: e.target.value, label: item.value })
                   }
                 />
                 <label htmlFor={item.code}>{item.value}</label>
@@ -212,7 +255,10 @@ const Modal = ({
           </div>
         )}
 
-        {(name === "prices" || name === "areas") && (
+        {(name === "prices" ||
+          name === "areas" ||
+          name === "categories" ||
+          name === "provinces") && (
           <button
             type="button"
             className="w-full absolute bottom-0 bg-[#FFA500] uppercase py-2 font-medium rounded-bl-md rounded-br-md"

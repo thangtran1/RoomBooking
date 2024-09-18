@@ -12,13 +12,15 @@ const Homepage = () => {
   const [postsData, setPostsData] = useState({ count: 0, rows: [] });
   const [page, setPage] = useState(1);
   const [searchParams] = useSearchParams();
-  // const priceCode = searchParams.get("priceCode");
 
   const priceMin = searchParams.get("priceMin");
   const priceMax = searchParams.get("priceMax");
 
-  const areaCode = searchParams.get("areaCode");
+  const areaMin = searchParams.get("areaMin");
+  const areaMax = searchParams.get("areaMax");
+
   const categoryCode = searchParams.get("categoryCode");
+  const provinceCode = searchParams.get("provinceCode");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,13 +29,15 @@ const Homepage = () => {
         page,
         priceMax,
         priceMin,
-        areaCode,
+        areaMax,
+        areaMin,
         categoryCode,
+        provinceCode,
       });
       setPostsData(data.data.response);
     };
     fetchData();
-  }, [page, priceMax, priceMin, areaCode, categoryCode]); //limit
+  }, [page, priceMax, priceMin, areaMax, areaMin, categoryCode, provinceCode]); //limit
 
   const totalPages = Math.ceil(postsData.count / limit);
 

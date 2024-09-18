@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import Header from "./Header";
-import { Outlet, useLocation } from "react-router-dom";
-import { Navigation, Search } from "./index";
-import { Intro, Contact, Footer } from "../../components";
 import { useSelector } from "react-redux";
+import { Outlet, useLocation } from "react-router-dom";
+import { Contact, Footer, Intro } from "../../components";
 import { path } from "../../ultils/constant";
+import Header from "./Header";
+import { Navigation, Search } from "./index";
 const Home = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const location = useLocation();

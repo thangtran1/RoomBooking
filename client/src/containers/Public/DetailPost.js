@@ -147,7 +147,7 @@ const DetailPost = () => {
           {posts && (
             <div className="mt-8">
               <h3 className="font-semibold text-xl my-4">Bản đồ</h3>
-              <Map address={posts[0]?.address} />
+              {/* <Map address={posts[0]?.address} /> */}
               <span className="text-gray-500 text-sm py-4 text-justify">
                 {`${underMap[0]}`}
               </span>

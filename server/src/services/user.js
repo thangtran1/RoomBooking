@@ -19,6 +19,7 @@ export const getOne = (id) =>
         response,
       });
     } catch (e) {
+      console.error("Error fetching user:", e); // Log lỗi chi tiết
       reject(e);
     }
   });

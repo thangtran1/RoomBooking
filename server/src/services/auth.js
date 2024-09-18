@@ -54,7 +54,7 @@ export const loginService = ({ phone, password }) =>
       const token =
         isCorrectPassword &&
         jwt.sign(
-          { id: respone, phone: respone.phone },
+          { id: respone.id, phone: respone.phone },
           process.env.SECRET_KEY,
           { expiresIn: "2d" }
         );

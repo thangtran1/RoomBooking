@@ -1,21 +1,12 @@
 import React, { memo } from "react";
 import icons from "../ultils/icons";
-import { connect } from "react-redux";
-import { useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
-import { createSearchParams, Link, useSearchParams } from "react-router-dom";
-
-const filterPrice = [
-  { title: "Duoi 1 tr", min: "", max: "1000000" },
-  { title: "Tu 1 - 2 ", min: "1000000", max: "2000000" },
-  { title: "Tren 15 tr", min: "15000000", max: "" },
-];
 
 const { GrNext } = icons;
-const ItemSidebar = ({ title, content, isDouble, searchParamKey }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  // if double laf 1 hangf conf ko phair thif 2 hangf (xem theo gia)
+const ItemSidebar = ({ title, content, isDouble }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const formatContent = () => {
     const oddEL = content?.filter((item, index) => index % 2 !== 0);
@@ -30,28 +21,30 @@ const ItemSidebar = ({ title, content, isDouble, searchParamKey }) => {
   };
 
   const handleFilter = (value) => {
-    const queryParams = Object.fromEntries([...searchParams]);
-    setSearchParams(
-      createSearchParams({ ...queryParams, [searchParamKey]: value })
-    );
+    // Tạo đối tượng tham số tìm kiếm
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set("categoryCode", value);
+
+    // Cập nhật URL với tham số tìm kiếm mới
+    setSearchParams(newParams);
   };
 
   return (
     <div className="w-full p-4 rounded-md bg-white">
-      <h3 className="text-lg font-semibold mb-4"> {title}</h3>
+      <h3 className="text-lg font-semibold mb-4">{title}</h3>
       {!isDouble && (
         <div className="flex flex-col gap-2">
           {content?.length > 0 &&
             content.map((item) => {
               return (
-                <Link
-                  to={`${formatVietnameseToString(item.value)}`}
+                <div
                   key={item.code}
                   className="flex gap-2 items-center cursor-pointer hover:text-orange-600 border-b border-gray-200 pb-1 border-dashed"
+                  onClick={() => handleFilter(item.code)}
                 >
                   <GrNext size={10} />
-                  <p className="">{item.value}</p>
-                </Link>
+                  <p>{item.value}</p>
+                </div>
               );
             })}
         </div>
@@ -61,21 +54,21 @@ const ItemSidebar = ({ title, content, isDouble, searchParamKey }) => {
           {content?.length > 0 &&
             formatContent(content).map((item, index) => {
               return (
-                <div key={index} className="">
+                <div key={index}>
                   <div className="flex gap-2 items-center justify-around">
                     <div
                       className="flex flex-1 gap-2 items-center cursor-pointer hover:text-orange-600 border-b border-gray-200 pb-1 border-dashed"
                       onClick={() => handleFilter(item.left.code)}
                     >
                       <GrNext size={10} />
-                      <p className="">{item.left.value}</p>
+                      <p>{item.left.value}</p>
                     </div>
                     <div
                       className="flex flex-1 gap-2 items-center cursor-pointer hover:text-orange-600 border-b border-gray-200 pb-1 border-dashed"
                       onClick={() => handleFilter(item.right.code)}
                     >
                       <GrNext size={10} />
-                      <p className="">{item.right.value}</p>
+                      <p>{item.right.value}</p>
                     </div>
                   </div>
                 </div>
