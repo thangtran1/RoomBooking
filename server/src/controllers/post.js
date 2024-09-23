@@ -17,7 +17,7 @@ export const getPosts = async (req, res) => {
 export const getPostsLimit = async (req, res) => {
   const {
     page = 1,
-    limit = 10,
+    limit = 5,
     priceNumber,
     areaNumber,
     limitPost,
@@ -161,6 +161,83 @@ export const deletePost = async (req, res) => {
       err: -1,
       msg: "Failed delete post controller.",
       error: e.message,
+    });
+  }
+};
+
+// lấy all user
+export const getAllUser = async (req, res) => {
+  try {
+    const response = await postService.getAllUsersService();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at post controller.",
+    });
+  }
+};
+
+export const getPostUser = async (req, res) => {
+  try {
+    const response = await postService.getPostUser();
+
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at post controller.",
+      e,
+    });
+  }
+};
+
+// post admin manager
+
+export const deletePostAdmin = async (req, res) => {
+  try {
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Missing required ID",
+      });
+    }
+    const response = await postService.deletePostAdminService(id);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: `Failed at postAdminService controller: ${e.message}`,
+    });
+  }
+};
+
+export const updatePostAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const postData = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Missing required ID",
+      });
+    }
+
+    if (!postData || Object.keys(postData).length === 0) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Missing required data to update",
+      });
+    }
+
+    const response = await postService.updatePostAdminService(id, postData);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: `Failed at updatePostAdmin controller: ${e.message}`,
     });
   }
 };

@@ -215,7 +215,7 @@ export const createNewPostsService = (body, userId) =>
         address: body.address || null,
         attributesId,
         categoryCode: body.categoryCode,
-        description: JSON.stringify(body.description) || null,
+        description: JSON.stringify([body.description]) || null,
         userId,
         overviewId,
         imagesId,
@@ -224,7 +224,7 @@ export const createNewPostsService = (body, userId) =>
         provinceCode: body?.province?.includes("Thành phố")
           ? generateCode(body?.province?.replace("Thành phố ", ""))
           : generateCode(body?.province?.replace("Tỉnh ", "")) || null,
-        priceNumber: body.priceNumber,
+        priceNumber: +body.priceNumber * 1000000,
         areaNumber: body.areaNumber,
       });
 
@@ -436,5 +436,89 @@ export const deletePost = (
       });
     } catch (e) {
       reject(e);
+    }
+  });
+
+// get all user
+export const getAllUsersService = async () => {
+  try {
+    const response = await db.User.findAll({
+      raw: true,
+      nest: true,
+      attributes: {
+        exclude: ["fbUrl", "password", "avatar", "createdAt", "updatedAt"],
+      },
+    });
+
+    return {
+      err: response ? 0 : 1,
+      msg: response ? "OK" : "Failed to get users.",
+      response,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const getPostUser = async () => {
+  try {
+    const response = await db.Post.findAll({
+      raw: true,
+      nest: true,
+      where: ["id", "title", "userId"],
+    });
+
+    return {
+      err: response ? 0 : 1,
+      msg: response ? "OK" : "Failed to get users.",
+      response,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+// delete post admin manage
+export const deletePostAdminService = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Post.destroy({ where: { id } });
+
+      resolve({
+        err: 0,
+        msg: "Post deleted successfully.",
+        response,
+      });
+    } catch (e) {
+      reject({
+        err: -1,
+        msg: `Failed at post service: ${e.message}`,
+      });
+    }
+  });
+
+export const updatePostAdminService = (id, postData) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Post.update(postData, {
+        where: { id },
+      });
+      if (response[0] === 0) {
+        return reject({
+          err: 1,
+          msg: "No post found to update.",
+        });
+      }
+
+      resolve({
+        err: 0,
+        msg: "Post updated successfully.",
+        response,
+      });
+    } catch (e) {
+      reject({
+        err: -1,
+        msg: `Failed at post service: ${e.message}`,
+      });
     }
   });

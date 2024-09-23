@@ -4,16 +4,18 @@ import verifyToken from "../middlewares/verifyToken";
 const router = express.Router();
 
 router.get("/", postController.getAllPosts);
-
 router.get("/all", postController.getPosts);
-
 router.get("/limit", postController.getPostsLimit);
-
 router.get("/new-post", postController.getNewPosts);
+router.get("/all-user", postController.getAllUser);
+router.get("/getUserPost", postController.getPostUser);
+
+// CRUD manager admin
+router.delete("/delete-post", postController.deletePostAdmin);
+router.put("/update-post/:id", postController.updatePostAdmin);
 
 router.use(verifyToken);
 router.post(`/create-new`, postController.createNewPost);
-
 router.get(`/limit-admin`, postController.getPostsLimitAdmin);
 
 router.put(`/update`, postController.updatePost);

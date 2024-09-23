@@ -10,16 +10,26 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.hasMany(models.Post, { foreignKey: "userId", as: "user" });
+      User.hasMany(models.Favorite, {
+        foreignKey: "userId",
+        as: "favourite",
+      });
     }
   }
   User.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       name: DataTypes.STRING,
       password: DataTypes.STRING,
       phone: DataTypes.STRING,
       zalo: DataTypes.STRING,
       fbUrl: DataTypes.STRING,
       avatar: DataTypes.BLOB,
+      role: DataTypes.STRING,
     },
     {
       sequelize,

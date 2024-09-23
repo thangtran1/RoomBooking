@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const hashPassword = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(12));
-export const registerService = ({ phone, password, name }) =>
+export const registerService = ({ phone, password, name, role = "user" }) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.User.findOrCreate({
@@ -54,7 +54,7 @@ export const loginService = ({ phone, password }) =>
       const token =
         isCorrectPassword &&
         jwt.sign(
-          { id: respone.id, phone: respone.phone },
+          { id: respone.id, phone: respone.phone, role: respone.role },
           process.env.SECRET_KEY,
           { expiresIn: "2d" }
         );

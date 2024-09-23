@@ -54,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "code",
         as: "labelData",
       });
+      Post.hasMany(models.Favorite, {
+        foreignKey: "postId",
+        as: "favourite",
+      });
     }
   }
   Post.init(
@@ -73,6 +77,10 @@ module.exports = (sequelize, DataTypes) => {
       imagesId: DataTypes.STRING,
       priceNumber: DataTypes.FLOAT,
       areaNumber: DataTypes.FLOAT,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "pending",
+      },
     },
     {
       sequelize,

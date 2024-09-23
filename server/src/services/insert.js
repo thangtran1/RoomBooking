@@ -132,7 +132,6 @@ export const insertService = () =>
           });
         });
       });
-      // console.log(provinceCodes);
       provinceCodes?.forEach(async (item) => {
         await db.Province.create(item);
       });
