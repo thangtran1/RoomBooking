@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.20.3",
     "axios": "^1.7.5",
+    "bcryptjs": "^2.4.3",
     "buffer": "^6.0.3",
     "google-map-react": "^2.2.1",
     "moment": "^2.30.1",

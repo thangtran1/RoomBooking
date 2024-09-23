@@ -20,7 +20,7 @@ const CreatePost = ({ isEdit }) => {
     const initData = {
       categoryCode: dataEdit?.categoryCode || "",
       title: dataEdit?.title || "",
-      priceNumber: dataEdit?.priceNumber * 1000000 || 0,
+      priceNumber: dataEdit?.priceNumber || 0,
       areaNumber: dataEdit?.areaNumber || 0,
       images: dataEdit?.images?.image
         ? JSON.parse(dataEdit?.images?.image)
@@ -29,7 +29,9 @@ const CreatePost = ({ isEdit }) => {
       priceCode: dataEdit?.priceCode || "",
       areaCode: dataEdit?.areaCode || "",
       description: dataEdit?.description
-        ? JSON.parse(dataEdit?.description)
+        ? Array.isArray(JSON.parse(dataEdit.description))
+          ? JSON.parse(dataEdit.description)
+          : [dataEdit.description]
         : "",
       target: dataEdit?.overview?.target || "",
       province: dataEdit?.province || "",
@@ -86,6 +88,38 @@ const CreatePost = ({ isEdit }) => {
     }));
   };
   const handleSubmit = async () => {
+    const formattedTitle = payload.title.replace(/\s+/g, "");
+    if (!payload.title || payload.title.trim() === "") {
+      Swal.fire("Thông báo", "Tiêu đề không được để trống!", "error");
+      return;
+    }
+
+    if (
+      !payload?.description ||
+      (Array.isArray(payload.description) &&
+        payload.description.every((desc) => desc.trim() === ""))
+    ) {
+      Swal.fire("Thông báo", "Nội dung mô tả không được để trống!", "error");
+      return;
+    }
+    if (payload.priceNumber < 0) {
+      Swal.fire("Thông báo", "Giá không được là số âm!", "error");
+      return;
+    }
+
+    if (payload.areaNumber < 0) {
+      Swal.fire("Thông báo", "Diện tích không được là số âm!", "error");
+      return;
+    }
+    if (!payload.target || payload.target.trim() === "") {
+      Swal.fire(
+        "Thông báo",
+        "Đối tượng cho thuê không được để trống!",
+        "error"
+      );
+      return;
+    }
+
     let priceCodeArr = getCodes(
       +payload.priceNumber / Math.pow(10, 6),
       prices,
@@ -99,6 +133,7 @@ const CreatePost = ({ isEdit }) => {
 
     let finalPayload = {
       ...payload,
+      title: formattedTitle,
       priceCode,
       areaCode,
       userId: currentData.id,
@@ -188,12 +223,6 @@ const CreatePost = ({ isEdit }) => {
                 className="w-full border-2 justify-center items-center border-gray-400 flex flex-col gap-4 border-dashed rounded-md h-[200px] my-4 "
                 htmlFor="file"
               >
-                {/* <img
-                  src={uploadimage}
-                  width="90px"
-                  height="90px"
-                  color="blue"
-                /> */}
                 {isLoading ? (
                   <Loading />
                 ) : (

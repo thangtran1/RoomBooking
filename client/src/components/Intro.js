@@ -11,7 +11,7 @@ const Intro = () => {
   const { categories } = useSelector((state) => state.app);
 
   return (
-    <div className="w-3/5  bg-white rounded-md shadow-md p-4 flex flex-col gap-4 justify-center items-center ">
+    <div className="w-4/5  bg-white rounded-md shadow-md p-4 flex flex-col gap-4 justify-center items-center ">
       <h3 className="font-bold text-lg">{text.title}</h3>
       <p className="text-gray-800 text-center my-4">
         {text.description}
@@ -50,7 +50,7 @@ const Intro = () => {
         {star.map((item) => {
           return (
             <span key={item}>
-              <TfiStar size={25} color="yellow" />
+              <TfiStar size={25} color="#b2b229" />
             </span>
           );
         })}
@@ -58,13 +58,15 @@ const Intro = () => {
       <p className="text-gray-600 italic text-center">{text.comment}</p>
       <span className="text-gray-700">{text.author}</span>
       <h3 className="font-bold text-lg py-2">{text.question}</h3>
-      <p>{text.answer}</p>
-      <Button
-        text="Đăng tin ngay"
-        bgColor="bg-secondary2"
-        textColor="text-white"
-        px="px-6"
-      />
+      <p className="italic">{text.answer}</p>
+      <Link to={"./he-thong/tao-moi-bai-dang"}>
+        <Button
+          text="Đăng tin ngay"
+          bgColor="bg-secondary2"
+          textColor="text-white"
+          px="px-6"
+        />
+      </Link>
       <div className="h-12"></div>
     </div>
   );

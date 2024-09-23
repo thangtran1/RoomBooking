@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { InputForm, Button } from "../../components";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const Contact = () => {
   const [payload, setPayload] = useState({
@@ -8,22 +9,33 @@ const Contact = () => {
     phone: "",
     content: "",
   });
-  const handleSubmit = () => {
-    Swal.fire(
-      `Thanks ${payload.name ? payload.name : ""}`,
-      "Phản hồi của bạn đã được chúng tôi ghi nhận",
-      "success"
-    ).then(() => {
-      setPayload({
-        name: "",
-        phone: "",
-        content: "",
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/contact/create-contact",
+        payload
+      );
+      Swal.fire(
+        `Thanks ${payload.name ? payload.name : ""}`,
+        "Phản hồi của bạn đã được chúng tôi ghi nhận",
+        "success"
+      ).then(() => {
+        setPayload({
+          name: "",
+          phone: "",
+          content: "",
+        });
       });
-    });
+    } catch (error) {
+      console.error("There was an error!", error);
+      Swal.fire("Có lỗi xảy ra!", "Xin vui lòng thử lại sau.", "error");
+    }
   };
+
   return (
     <div className="w-full">
-      <h1 className=" text-3xl font-semibold mb-6">Liên hệ với chúng tôi</h1>
+      <h1 className="text-3xl font-semibold mb-6">Liên hệ với chúng tôi</h1>
       <div className="flex gap-4">
         <div className="flex-1 h-fit flex flex-col gap-4 bg-red-400 rounded-3xl p-4 text-white bg-gradient-to-br from-blue-700 to-cyan-400 ">
           <h4 className="font-medium text-2xl">Thông tin liên hệ</h4>
@@ -48,7 +60,7 @@ const Contact = () => {
             Cường Bắc, Hải Châu, Đà Nẵng, Việt Nam.
           </span>
         </div>
-        <div className="flex-1  bg-white shadow-md rounded-md p-4 mb-6">
+        <div className="flex-1 bg-white shadow-md rounded-md p-4 mb-6">
           <h4 className="font-medium text-2xl mb-4">Liên hệ trực tuyến</h4>
           <div className="flex flex-col gap-6">
             <InputForm

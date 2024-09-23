@@ -14,3 +14,4 @@ export { default as DetailPost } from "./DetailPost";
 export { default as SearchDetail } from "./SearchDetail";
 
 export { default as Contact } from "./Contact";
+export { default as Like } from "./Like";

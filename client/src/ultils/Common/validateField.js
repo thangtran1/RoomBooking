@@ -13,7 +13,6 @@ export const validate = (payload, setInvalidFields) => {
       invalids++;
     }
   });
-  console.log("fields:", fields);
 
   fields.forEach((item) => {
     switch (item[0]) {

@@ -1,8 +1,9 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import icons from "../ultils/icons";
 import { Link } from "react-router-dom";
 import { path } from "../ultils/constant";
 import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
+import axios from "axios"; // Import Axios
 
 const { RiStarSLine, RiHeartFill, RiHeartLine, TfiStar, RiBookmark3Fill } =
   icons;
@@ -18,7 +19,72 @@ const Item = ({
   id,
 }) => {
   const [isHoverHeart, setIsHoverHeart] = useState(false);
+  const [isHeartClicked, setIsHeartClicked] = useState(false);
 
+  useEffect(() => {
+    const favoriteStatus = localStorage.getItem(`favorite-${id}`);
+    if (favoriteStatus === "true") {
+      setIsHeartClicked(true);
+    }
+  }, [id]);
+
+  const handleHeartClick = async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const newHeartClicked = !isHeartClicked;
+    setIsHeartClicked(newHeartClicked);
+
+    localStorage.setItem(`favorite-${id}`, newHeartClicked);
+
+    const tokenString = localStorage.getItem("persist:auth");
+    let token;
+
+    if (tokenString) {
+      try {
+        const parsedAuth = JSON.parse(tokenString);
+        token = parsedAuth?.token?.replace(/\"/g, "");
+      } catch (error) {
+        console.error("Error parsing token:", error);
+      }
+    }
+
+    console.log("🚀 ~ handleHeartClick ~ token:", token);
+
+    try {
+      if (newHeartClicked) {
+        const response = await axios.post(
+          `http://localhost:5000/api/v1/favorite/likePost`,
+          {
+            userId: user?.id,
+            postId: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Post liked:", response);
+      } else {
+        const response = await axios.post(
+          `http://localhost:5000/api/v1/favorite/unlikePost`,
+          {
+            userId: user?.id,
+            postId: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Post unliked:", response.data);
+      }
+    } catch (error) {
+      console.error("Error handling favorite:", error);
+    }
+  };
   const handleStar = (star) => {
     const stars = [];
     const numberOfStars = Number(star);
@@ -36,37 +102,37 @@ const Item = ({
         to={`${path.DETAIL}${formatVietnameseToString(
           title?.replaceAll("/", "")
         )}/${id}`}
-        className="w-2/5 flex flex-wrap  gap-[2px] items-center relative cursor-pointer"
+        className="w-2/5 flex flex-wrap gap-[2px] items-center relative cursor-pointer"
       >
         {images.length > 0 &&
           images
-            // lấy 4 ảnh Arr(4)
-            .filter((i, index) => [...Array(4).keys()].some((i) => i === index))
-            ?.map((i, index) => {
-              return (
-                <img
-                  key={index}
-                  src={i}
-                  alt="preview"
-                  className="w-[47%] h-[120px] object-cover"
-                />
-              );
-            })}
+            .filter((_, index) => index < 4) // Limit to first 4 images
+            .map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt="preview"
+                className="w-[47%] h-[120px] object-cover"
+              />
+            ))}
 
-        <span className=" text-white bg-overlay-70 px-2 rounded-md absolute left-1 bottom-1">{`${images.length} ảnh`}</span>
+        <span className="text-white bg-overlay-70 px-2 rounded-md absolute left-1 bottom-1">{`${images.length} ảnh`}</span>
+
         <span
           onMouseEnter={() => setIsHoverHeart(true)}
           onMouseLeave={() => setIsHoverHeart(false)}
-          className=" text-white  absolute right-7 bottom-1"
+          onClick={handleHeartClick} // Gọi hàm khi nhấp vào trái tim
+          className="text-white absolute right-7 bottom-1 cursor-pointer"
         >
-          {isHoverHeart ? (
+          {isHeartClicked || isHoverHeart ? (
             <RiHeartFill color="red" size={25} />
           ) : (
             <RiHeartLine size={25} />
           )}
         </span>
       </Link>
-      <div className="w-3/5">
+
+      <div className="w-4/5">
         <div className="flex justify-between gap-4 w-full">
           <Link
             to={`${path.DETAIL}${formatVietnameseToString(
@@ -75,9 +141,9 @@ const Item = ({
             className="text-red-600 font-medium "
           >
             {handleStar(+star).length > 0 &&
-              handleStar(+star).map((star, number) => {
-                return <span key={number}>{star}</span>;
-              })}
+              handleStar(+star).map((star, number) => (
+                <span key={number}>{star}</span>
+              ))}
             {title}
           </Link>
           <div className="w-[10%] flex justify-end">
@@ -96,9 +162,8 @@ const Item = ({
               address.split(",")[address.split(",").length - 1]
             }`}
           </span>
-          {/* chuyển chuỗi thành mảng log address.split(',')  (-2,-1 length tính từ 1 đi index tính từ 0 vị trí cuối cùng trừ 1 gần cuối -2)*/}
         </div>
-        <p className="text-gray-500 w-full h-[50px]  text-ellipsis overflow-hidden">
+        <p className="text-gray-500 w-full h-[50px] text-ellipsis overflow-hidden">
           {description}
         </p>
         <div className="flex items-center my-5 justify-between">
@@ -112,8 +177,8 @@ const Item = ({
           </div>
           <div className="flex items-center gap-1">
             <a
-              href={`tel:${user?.phone}`}
-              target="_blank"
+              // href={`tel:${user?.phone}`}
+              // target="_blank"
               className="bg-blue-700 text-white p-1 rounded-md"
             >
               {`Gọi ${user?.phone}`}

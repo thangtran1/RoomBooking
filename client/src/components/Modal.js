@@ -11,7 +11,9 @@ const arrPrice = [
   { label: "Từ 2 đến 3 triệu", priceMin: 2, priceMax: 3 },
   { label: "Từ 3 đến 5 triệu", priceMin: 3, priceMax: 5 },
   { label: "Từ 5 đến 7 triệu", priceMin: 5, priceMax: 7 },
-  { label: "Trên 7 triệu", priceMin: 7, priceMax: "" },
+  { label: "Từ 7 đến 10 triệu", priceMin: 7, priceMax: 10 },
+  { label: "Từ 10 đến 15 triệu", priceMin: 10, priceMax: 15 },
+  { label: "Trên 15 triệu", priceMin: 15, priceMax: "" },
 ];
 
 const arrArea = [

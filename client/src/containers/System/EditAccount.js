@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { InputReadOnly, InputFormV2, Button } from "../../components";
 import anonAvatar from "../../assets/anon.avatar.png";
@@ -6,31 +6,55 @@ import { apiUpdateUser } from "../../services";
 import { fileToBase64, blobToBase64 } from "../../ultils/Common/toBase64";
 import { getCurrent } from "../../store/actions";
 import Swal from "sweetalert2";
+
 const EditAccount = () => {
   const { currentData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [payload, setPayload] = useState({
-    name: currentData?.name || "",
-    avatar: blobToBase64(currentData?.avatar) || "",
-    fbUrl: currentData?.fbUrl || "",
-    zalo: currentData?.zalo || "",
+    name: "",
+    avatar: "",
+    fbUrl: "",
+    zalo: "",
   });
-  const handleSubmit = async () => {
-    const response = await apiUpdateUser(payload);
-    if (response?.data.err === 0) {
-      Swal.fire(
-        "Done",
-        "Chỉnh sửa thông tin cá nhân thành công",
-        "success"
-      ).then(() => {
-        dispatch(getCurrent());
+
+  useEffect(() => {
+    if (currentData) {
+      setPayload({
+        name: currentData.name || "",
+        avatar: currentData?.avatar ? blobToBase64(currentData.avatar) : "",
+        fbUrl: currentData.fbUrl || "",
+        zalo: currentData.zalo || "",
       });
-    } else {
-      Swal.fire(
-        "Oops!",
-        "Chỉnh sửa thông tin cá nhân không thành công",
-        "error"
-      );
+    }
+  }, [currentData]);
+
+  const handleSubmit = async () => {
+    try {
+      const response = await apiUpdateUser(currentData?.id, {
+        ...payload,
+        avatar: payload.avatar || "",
+      });
+
+      console.log("response: ", response);
+
+      if (response?.data.msg === "User updated successfully!") {
+        Swal.fire(
+          "Done",
+          "Chỉnh sửa thông tin cá nhân thành công",
+          "success"
+        ).then(() => {
+          dispatch(getCurrent());
+        });
+      } else {
+        Swal.fire(
+          "Oops!",
+          "Chỉnh sửa thông tin cá nhân không thành công",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+      Swal.fire("Error", "Có lỗi xảy ra trong quá trình cập nhật!", "error");
     }
   };
 
@@ -41,13 +65,14 @@ const EditAccount = () => {
       avatar: imageBase64,
     }));
   };
+
   return (
-    <div className="flex flex-col h-full items-center ">
-      <h1 className="text-3xl w-full text-start font-medium  py-4 border-b border-gray-200">
+    <div className="flex flex-col h-full items-center">
+      <h1 className="text-3xl w-full text-start font-medium py-4 border-b border-gray-200">
         Chỉnh sửa thông tin cá nhân
       </h1>
-      <div className="w-3/5 flex items-center justify-center flex-auto">
-        <div className=" py-6 flex flex-col gap-4 w-full ">
+      <div className="w-4/5 flex items-center justify-center flex-auto">
+        <div className="py-6 flex flex-col gap-4 w-full">
           <InputReadOnly
             direction="flex-row"
             label="Mã thành viên"
@@ -61,7 +86,6 @@ const EditAccount = () => {
             label="Số điện thoại"
             value={currentData?.phone || ""}
           />
-
           <InputFormV2
             setValue={setPayload}
             name="name"
@@ -69,7 +93,6 @@ const EditAccount = () => {
             direction="flex-row"
             value={payload.name}
           />
-
           <InputFormV2
             setValue={setPayload}
             name="zalo"
@@ -84,7 +107,7 @@ const EditAccount = () => {
             label="Facebook"
             value={payload.fbUrl}
           />
-          <div className="flex ">
+          <div className="flex">
             <label className="w-48 flex-none" htmlFor="Password">
               Mật khẩu
             </label>

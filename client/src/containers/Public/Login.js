@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message } from "antd";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import * as actions from "../../store/actions";
+import { Form, Input, Button } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import validate from "../../ultils/Common/validateField";
+import * as actions from "../../store/actions";
+
 const Login = () => {
   const [form] = Form.useForm();
   const location = useLocation();
@@ -28,7 +28,7 @@ const Login = () => {
   }, [msg, update]);
 
   const onFinish = (values) => {
-    let finalPayload = isRegister
+    const finalPayload = isRegister
       ? values
       : {
           phone: values.phone,
@@ -42,6 +42,36 @@ const Login = () => {
     }
   };
 
+  const validateField = (rule, value) => {
+    if (!value || value.trim() === "") {
+      return Promise.reject(new Error("Trường này không được để trống"));
+    }
+
+    if (value && value.trim() !== value) {
+      return Promise.reject(new Error("Không được chứa khoảng trắng"));
+    }
+
+    return Promise.resolve();
+  };
+
+  const validatePhoneNumber = (rule, value) => {
+    const trimmedValue = value?.trim();
+    if (!trimmedValue) {
+      return Promise.reject(new Error("Số điện thoại không hợp lệ"));
+    }
+
+    const hasZero = trimmedValue.startsWith("0");
+    const isValidLength = hasZero
+      ? trimmedValue.length === 10
+      : trimmedValue.length === 9;
+
+    if (!isValidLength || !/^[0-9]+$/.test(trimmedValue)) {
+      return Promise.reject(new Error("Số điện thoại không hợp lệ"));
+    }
+
+    return Promise.resolve();
+  };
+
   return (
     <div className="w-full flex items-center justify-center">
       <div className="bg-white w-[600px] p-[30px] pb-[100px] rounded-md shadow-sm ">
@@ -53,22 +83,12 @@ const Login = () => {
           name="login-form"
           onFinish={onFinish}
           layout="vertical"
-          initialValues={{
-            phone: "",
-            password: "",
-            name: "",
-          }}
         >
           {isRegister && (
             <Form.Item
               name="name"
               label="Họ Tên"
-              rules={[
-                {
-                  required: true,
-                  message: "Bạn không được bỏ trống trường này",
-                },
-              ]}
+              rules={[{ validator: validateField }]}
             >
               <Input />
             </Form.Item>
@@ -77,10 +97,7 @@ const Login = () => {
           <Form.Item
             name="phone"
             label="Số Điện Thoại"
-            rules={[
-              { required: true, message: "Bạn không được bỏ trống trường này" },
-              { pattern: /^[0-9]+$/, message: "Số điện thoại không hợp lệ" },
-            ]}
+            rules={[{ validator: validatePhoneNumber }]}
           >
             <Input />
           </Form.Item>
@@ -89,7 +106,7 @@ const Login = () => {
             name="password"
             label="Mật Khẩu"
             rules={[
-              { required: true, message: "Bạn không được bỏ trống trường này" },
+              { validator: validateField },
               { min: 6, message: "Mật khẩu phải có tối thiểu 6 kí tự" },
             ]}
           >

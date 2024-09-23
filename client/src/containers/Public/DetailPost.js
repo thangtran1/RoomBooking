@@ -20,7 +20,6 @@ const DetailPost = () => {
     postId && dispatch(getPostsLimit({ id: postId }));
   }, [postId]);
 
-  console.log("🚀 ~ :", posts);
   const handleFilterLabel = () => {
     const titleSearch = `Tìm kiếm tin đăng theo chuyên mục ${posts[0]?.labelData?.value}`;
     navigate(
@@ -82,13 +81,13 @@ const DetailPost = () => {
           </div>
           <div className="mt-8">
             <h3 className="font-semibold text-xl my-4">Thông tin mô tả</h3>
-            {/* <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               {posts &&
                 posts[0]?.description &&
                 JSON.parse(posts[0]?.description)?.map((item, index) => {
                   return <span key={index}>{item}</span>;
                 })}
-            </div> */}
+            </div>
           </div>
           <div className="mt-8">
             <h3 className="font-semibold text-xl my-4">Đặc điểm tin đăng</h3>
@@ -102,23 +101,20 @@ const DetailPost = () => {
                   <td className="p-2">Khu vực:</td>
                   <td className="p-2 ">{posts[0]?.overview?.area}</td>
                 </tr>
+
                 <tr className="bg-gray-200 border-b border-gray-200">
-                  <td className="p-2">Loại tin rao:</td>
-                  <td className="p-2 ">{posts[0]?.overview?.type}</td>
-                </tr>
-                <tr className="bg-gray-50 border-b border-gray-200">
                   <td className="p-2">Đối tượng thuê:</td>
                   <td className="p-2 ">{posts[0]?.overview?.target}</td>
                 </tr>
-                <tr className="bg-gray-200 border-b border-gray-200">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   <td className="p-2">Gói tin:</td>
                   <td className="p-2 ">{posts[0]?.overview?.bonus}</td>
                 </tr>
-                <tr className="bg-gray-50 border-b border-gray-200">
+                <tr className="bg-gray-200 border-b border-gray-200">
                   <td className="p-2">Ngày đăng:</td>
                   <td className="p-2 ">{posts[0]?.overview?.created}</td>
                 </tr>
-                <tr className="bg-gray-200">
+                <tr className="bg-gray-50">
                   <td className="p-2">Ngày hết hạn:</td>
                   <td className="p-2 ">{posts[0]?.overview?.expired}</td>
                 </tr>

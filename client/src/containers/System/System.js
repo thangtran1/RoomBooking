@@ -14,7 +14,7 @@ const System = () => {
       <Header />
       <div className="flex w-full flex-auto h-screen">
         <Sidebar />
-        <div className="flex-auto bg-white shadow-md h-full p-4 overflow-y-scroll">
+        <div className="flex-auto bg-white shadow-md h-full p-8 overflow-y-scroll">
           <Outlet />
         </div>
       </div>

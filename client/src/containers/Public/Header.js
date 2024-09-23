@@ -1,45 +1,55 @@
-import React, { useCallback, useRef, useEffect, useState } from "react";
-import logo from "../../assets/logo.png";
-import removeBgLogo from "../../assets/logo-removebg-preview.png";
+import React, { useCallback, useState } from "react";
 import { Button, Use } from "../../components";
 import icons from "../../ultils/icons";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import { path } from "../../ultils/constant";
+import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../store/actions";
 import menuManage from "../../ultils/menuManage";
+import { path } from "../../ultils/constant";
+import removeBgLogo from "../../assets/logo-removebg-preview.png";
 
-const { AiOutlinePlusCircle, AiOutlineLogout, BsChevronDown } = icons;
+const {
+  AiOutlinePlusCircle,
+  AiOutlineLogout,
+  BsChevronDown,
+  MdManageAccounts,
+} = icons;
 
-const Header = ({ page }) => {
+const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
-
+  const { currentData } = useSelector((state) => state.user);
   const [isShowMenu, setIsShowMenu] = useState(false);
-  const goLogin = useCallback((flag) => {
-    navigate(path.LOGIN, { state: { flag } });
-  }, []);
 
-  const [searchParams] = useSearchParams();
+  const goLogin = useCallback(
+    (flag) => {
+      navigate(path.LOGIN, { state: { flag } });
+    },
+    [navigate]
+  );
 
-  // const divRef = useRef();
-  // useEffect(() => {
-  //     divRef.current.scrollIntoView({ behavior: "smooth", block: 'start' })
-  // }, [searchParams.get('page')])
-  // ref={divRef}
+  const isAdmin = currentData?.role === "admin";
+
+  const filteredMenuManage = menuManage.filter((item) => {
+    if (isAdmin) {
+      return item.text !== "Quản lý tin đăng";
+    }
+    return true;
+  });
+
   return (
-    <div className="w-3/5">
-      <div className="w-full flex items-center justify-between">
+    <div className="w-full">
+      <div className="w-4/5 ml-auto mr-auto flex items-center justify-between">
         <Link to={"/"}>
           <img
             src={removeBgLogo}
             alt="logo"
-            className="w-[240PX] H-[70px] object-contain"
+            className="w-[240px] h-[70px] object-contain"
           />
         </Link>
         <div className="flex items-center gap-1">
-          {!isLoggedIn && (
+          {!isLoggedIn ? (
             <div className="flex items-center gap-1">
               <small>PhongtroLaLaHome.com xin chào !</small>
               <Button
@@ -48,7 +58,6 @@ const Header = ({ page }) => {
                 bgColor="bg-[#3961fb]"
                 onClick={() => goLogin(false)}
               />
-
               <Button
                 text={"Đăng ký"}
                 textColor="text-white"
@@ -56,9 +65,7 @@ const Header = ({ page }) => {
                 onClick={() => goLogin(true)}
               />
             </div>
-          )}
-
-          {isLoggedIn && (
+          ) : (
             <div className="flex items-center gap-3 relative">
               <Use />
               <Button
@@ -70,19 +77,26 @@ const Header = ({ page }) => {
                 onClick={() => setIsShowMenu((prev) => !prev)}
               />
               {isShowMenu && (
-                <div className="absolute min-w-200  top-full bg-white shadow-md rounded-md p-4 right-0 flex flex-col ">
-                  {menuManage.map((item) => {
-                    return (
-                      <Link
-                        className="flex items-center gap-2 hover:text-orange-500 text-blue-600 border-b border-gray-200 py-2"
-                        key={item.id}
-                        to={item?.path}
-                      >
-                        {item?.icon}
-                        {item.text}
-                      </Link>
-                    );
-                  })}
+                <div className="absolute min-w-200 top-full bg-white shadow-md rounded-md p-4 right-0 flex flex-col">
+                  {filteredMenuManage.map((item) => (
+                    <Link
+                      className="flex items-center gap-2 hover:text-orange-500 text-blue-600 border-b border-gray-200 py-2"
+                      key={item.id}
+                      to={item?.path}
+                    >
+                      {item?.icon}
+                      {item.text}
+                    </Link>
+                  ))}
+                  {isAdmin && (
+                    <Link
+                      className="flex items-center gap-2 hover:text-orange-500 text-blue-600 border-b border-gray-200 py-2"
+                      to="/he-thong/quan-ly-user"
+                    >
+                      <MdManageAccounts />
+                      Quản lý Admin
+                    </Link>
+                  )}
                   <span
                     className="cursor-pointer flex items-center gap-2 hover:text-orange-500 text-blue-600 py-2"
                     onClick={() => {
@@ -109,4 +123,5 @@ const Header = ({ page }) => {
     </div>
   );
 };
+
 export default Header;

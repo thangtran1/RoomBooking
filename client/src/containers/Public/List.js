@@ -64,7 +64,7 @@ const List = ({ posts, categoryCode }) => {
                 attributes={item?.attributes}
                 description={JSON.parse(item?.description)}
                 images={JSON.parse(item?.images?.image)}
-                star={+item?.star} // từ string conver thành interger
+                star={+item?.star}
                 title={item?.title}
                 user={item?.user}
                 id={item?.id}

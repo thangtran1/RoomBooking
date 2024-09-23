@@ -12,15 +12,15 @@ export const apiGetCurrent = () =>
     }
   });
 
-export const apiUpdateUser = (payload) =>
+export const apiUpdateUser = (id, payload) =>
   new Promise(async (resolve, reject) => {
     try {
-      const respone = await axios({
+      const response = await axios({
         method: "put",
-        url: "/api/v1/user/",
+        url: `/api/v1/user/update/${id}`,
         data: payload,
       });
-      resolve(respone);
+      resolve(response);
     } catch (e) {
       reject(e);
     }

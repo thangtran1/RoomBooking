@@ -15,12 +15,18 @@ export const path = {
   CONTACT: "lien-he",
   DETAIL: "chi-tiet/",
   DETAIL_ALL: "chi-tiet/*",
+  MANAGE_USER: "quan-ly-user",
+  MANAGE_CATEGORY: "quan-ly-danh-muc",
+  MANAGE_POST_USER: "quan-ly-bai-dang-user",
+  MANAGE_CONTACT: "quan-ly-phan-hoi",
+  SAVE_NEW: "tin-da-luu",
 };
 
 export const text = {
   HOME_TITLE: "Tìm kiếm chỗ thuê ưng ý",
   HOME_DESCRIPTION:
     "Kênh thông tin Phòng trọ số 1 Việt Nam - Website đăng tin cho thuê phòng trọ, nhà nguyên căn, căn hộ, ở ghép nhanh, hiệu quả với 100.000+ tin đăng và 2.500.000 lượt xem mỗi tháng.",
+  HOME_SUB_TITLE: "Khu vực nổi bật",
 };
 
 export const location = [

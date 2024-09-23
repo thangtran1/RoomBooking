@@ -98,7 +98,7 @@ const Search = () => {
 
   return (
     <>
-      <div className=" w-3/5 my-3 p-[10px] bg-[#febb02] rounded-lg  flex-col lg:flex-row flex  items-center justify-around gap-2 ">
+      <div className=" w-4/5 my-3 p-[10px] bg-[#febb02] rounded-lg  flex-col lg:flex-row flex  items-center justify-around gap-2 ">
         <span
           onClick={() =>
             handleShowModal(categories, "categories", "Tìm tất cả", "category")

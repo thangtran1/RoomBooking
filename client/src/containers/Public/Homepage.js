@@ -42,10 +42,13 @@ const Homepage = () => {
   const totalPages = Math.ceil(postsData.count / limit);
 
   return (
-    <div className=" w-full flex flex-col gap-3">
+    <div className=" w-full flex flex-col gap-2">
       <div>
         <h1 className="text-center text-[28px] font-bold">{text.HOME_TITLE}</h1>
         <p className="text-base text-gray-600">{text.HOME_DESCRIPTION}</p>
+        <p className=" font-bold text-lg text-gray-600  text-center">
+          {text.HOME_SUB_TITLE}
+        </p>
       </div>
       <Province />
       <div className="w-full flex gap-4">

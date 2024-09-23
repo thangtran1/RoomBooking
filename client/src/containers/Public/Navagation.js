@@ -12,13 +12,23 @@ import { path } from "../../ultils/constant";
 const Navigation = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.app);
+
   const [searchParams] = useSearchParams();
   const queryParams = Object.fromEntries([...searchParams]);
   const categoryCode = queryParams.categoryCode;
 
+  // Sử dụng useLocation để kiểm tra URL hiện tại
+  const location = useLocation();
+  const { pathname } = location;
+
   useEffect(() => {
     dispatch(actions.getCategories());
   }, [dispatch]);
+
+  // Cuộn lên đầu trang khi URL thay đổi
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location]);
 
   return (
     <div
@@ -26,11 +36,13 @@ const Navigation = ({ isAdmin }) => {
         isAdmin ? "justify-start" : "justify-center"
       } items-center h-[40px] bg-secondary1 text-white`}
     >
-      <div className="w-3/5 h-full flex items-center text-sm font-medium">
+      <div className="w-4/5 h-full flex items-center text-sm font-medium">
         <NavLink
           to="/"
           className={`hover:bg-secondary2 h-full py-2 px-4 ${
-            !categoryCode ? "bg-secondary2" : "bg-secondary1"
+            pathname === "/" && !categoryCode
+              ? "bg-secondary2"
+              : "bg-secondary1"
           }`}
         >
           Trang chủ
@@ -54,8 +66,10 @@ const Navigation = ({ isAdmin }) => {
             </NavLink>
           ))}
         <NavLink
-          to={path.CONTACT}
-          className={`hover:bg-secondary2 h-full py-2 px-4`}
+          to={`/${path.CONTACT}`}
+          className={`hover:bg-secondary2 h-full py-2 px-4 ${
+            pathname === `/${path.CONTACT}` ? "bg-secondary2" : "bg-secondary1"
+          }`}
         >
           Liên hệ
         </NavLink>

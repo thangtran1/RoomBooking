@@ -7,6 +7,7 @@ import {
   DetailPost,
   SearchDetail,
   Contact,
+  Like,
 } from "./containers/Public";
 import { path } from "./ultils/constant";
 import { ToastContainer } from "react-toastify";
@@ -17,6 +18,10 @@ import {
   CreatePost,
   ManagePost,
   EditAccount,
+  ManageUser,
+  ManageCategory,
+  ManagePostUser,
+  ManageContact,
 } from "./containers/System";
 import * as actions from "./store/actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -49,6 +54,7 @@ function App() {
           <Route path={path.NHA_TRO_THUE} element={<Rental />} />
           <Route path={path.CHO_THUE_PHONG_TRO} element={<Rental />} />
           <Route path={path.SEARCH} element={<SearchDetail />} />
+          <Route path={path.SAVE_NEW} element={<Like />} />
           <Route
             path={path.DETAIL_POST__TITLE__POSTID}
             element={<DetailPost />}
@@ -60,12 +66,15 @@ function App() {
             path={path.DETAIL_POST__TITLE__POSTID}
             element={<DetailPost />}
           />
-          {/* <Route path={path.DETAIL} element={<DetailPost />} /> */}
         </Route>
         <Route path={path.SYSTEM} element={<System />}>
           <Route path={path.CREATE_POST} element={<CreatePost />} />
           <Route path={path.MANAGE_POST} element={<ManagePost />} />
           <Route path={path.EDIT_ACCOUNT} element={<EditAccount />} />
+          <Route path={path.MANAGE_USER} element={<ManageUser />} />
+          <Route path={path.MANAGE_CATEGORY} element={<ManageCategory />} />
+          <Route path={path.MANAGE_POST_USER} element={<ManagePostUser />} />
+          <Route path={path.MANAGE_CONTACT} element={<ManageContact />} />
         </Route>
       </Routes>
     </div>

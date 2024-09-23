@@ -8,22 +8,22 @@ import {
 
 export const getPosts = () => async (dispatch) => {
   try {
-    const respone = await apiGetPosts();
-    if (respone?.data.err === 0) {
+    const response = await apiGetPosts();
+    if (response?.data.err === 0) {
       dispatch({
         type: actionTypes.GET_POSTS,
-        posts: respone.data.response,
+        posts: response.data.response,
       });
     } else {
       dispatch({
         type: actionTypes.GET_POSTS,
-        data: respone.data.msg,
+        data: response.data.msg,
       });
     }
   } catch (e) {
     dispatch({
       type: actionTypes.GET_POSTS,
-      post: null,
+      posts: null,
     });
   }
 };

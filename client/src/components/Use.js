@@ -5,7 +5,6 @@ import { blobToBase64 } from "../ultils/Common/toBase64";
 
 const Use = () => {
   const { currentData } = useSelector((state) => state.user);
-
   return (
     <>
       {currentData && Object.keys(currentData).length > 0 && (
@@ -17,7 +16,7 @@ const Use = () => {
           />
           <div className="flex flex-col ">
             <span>
-              Xin chào,{" "}
+              Xin chào,
               <span className="font-semibold">{currentData?.name}</span>
             </span>
             <span>

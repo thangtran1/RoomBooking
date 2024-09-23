@@ -24,6 +24,7 @@ const BookInfor = ({ userData }) => {
 
       <a
         href={`https://zalo.me/${userData?.zalo}`}
+        target="_blank"
         className="bg-white py-2  font-bold text-lg flex items-center justify-center gap-2 w-full rounded-md"
       >
         <SiZalo color="blue" size={35} />

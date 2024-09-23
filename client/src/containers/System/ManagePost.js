@@ -44,7 +44,6 @@ const ManagePost = () => {
     }
   };
 
-  // statusCode = 1 đang hđ , 2 = đã hết hạn, 0 all
   useEffect(() => {
     if (status === 1) {
       const activePost = postOfCurrent?.filter((item) =>
@@ -116,10 +115,10 @@ const ManagePost = () => {
                     />
                   </td>
                   <td className="border px-2  flex-1 h-full flex items-center justify-center">
-                    {`${item?.title?.slice(0, 30)}...`}
+                    {`${item?.title?.slice(0, 10)}...`}
                   </td>
                   <td className="border px-2  flex-1 h-full flex items-center justify-center">
-                    {item?.attributes?.price}
+                    {`${item?.attributes?.price?.slice(0, 20)}...`}
                   </td>
                   <td className="border px-2  flex-1 h-full flex items-center justify-center">
                     {item?.overview?.created}
@@ -134,7 +133,6 @@ const ManagePost = () => {
                   </td>
                   <td className="border gap-4 px-2  flex-1 h-full items-center justify-center flex ">
                     <Button
-                      text="Sửa tin"
                       IcAfter={FaPencilAlt}
                       bgColor="bg-green-600"
                       textColor="white"
@@ -145,7 +143,6 @@ const ManagePost = () => {
                     />
 
                     <Button
-                      text="Xóa tin"
                       IcAfter={MdAutoDelete}
                       bgColor="bg-orange-600"
                       textColor="white"

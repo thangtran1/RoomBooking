@@ -12,7 +12,6 @@ const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
   const { categories } = useSelector((state) => state.app);
   const { currentData } = useSelector((state) => state.user);
   const { dataEdit } = useSelector((state) => state.post);
-  console.log("categories:", categories);
 
   return (
     <div>
