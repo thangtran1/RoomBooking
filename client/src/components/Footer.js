@@ -49,6 +49,7 @@ const Footer = () => {
                   <a
                     href="https://www.facebook.com/profile.php?id=100040684543718&locale=vi_VN"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     Facebook.com.vn
                   </a>
@@ -58,6 +59,7 @@ const Footer = () => {
                   <a
                     href="https://www.facebook.com/profile.php?id=100040684543718&locale=vi_VN"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     Email@gmail.com
                   </a>
@@ -71,9 +73,7 @@ const Footer = () => {
                 </p>
                 <p className="flex gap-2 items-center">
                   <FaTiktok className="text-2xl text-blue-400 p-2 border border-gray-400 rounded-full w-10 h-10 flex justify-center items-center" />
-                  <a href="" target="_blank">
-                    TikTok
-                  </a>
+                  <button>TikTok</button>
                 </p>
               </div>
               <div className="flex gap-4 mb-2 flex-col">

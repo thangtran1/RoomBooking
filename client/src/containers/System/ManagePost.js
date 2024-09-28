@@ -6,15 +6,13 @@ import { Button, UpdatePost } from "../../components";
 import icons from "../../ultils/icons";
 import { apiDeletePost } from "../../services";
 import Swal from "sweetalert2";
-import { useNavigate, Link } from "react-router-dom";
-import { path } from "../../ultils/constant";
+import { useNavigate } from "react-router-dom";
 const { FaPencilAlt, MdAutoDelete } = icons;
+
 const ManagePost = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
-
-  const [updateData, setUpdateData] = useState(false);
   const [posts, setPosts] = useState([]);
   const [status, setStatus] = useState("0");
   const { postOfCurrent, dataEdit } = useSelector((state) => state.post);
@@ -25,23 +23,38 @@ const ManagePost = () => {
 
   useEffect(() => {
     !dataEdit && dispatch(actions.getPostsLimitAdmin());
-  }, [dataEdit, updateData]);
+  }, [dataEdit, dispatch]);
 
   const checkStatus = (dateString) =>
     moment(dateString, process.env.REACT_APP_FORMAT_DATE).isSameOrAfter(
       new Date().toDateString()
     );
+
   useEffect(() => {
     !dataEdit && setIsEdit(false);
   }, [dataEdit]);
 
   const handleDeletePost = async (postId) => {
-    const response = await apiDeletePost(postId);
-    if (response?.data.err === 0) {
-      setUpdateData((prev) => !prev);
-    } else {
-      Swal.fire("Oops!", "Xóa tin đăng thất bại", "error");
-    }
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn xóa tin này?",
+      text: "Hành động này không thể hoàn tác!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, Delete!",
+      cancelButtonText: "No, Cancel!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await apiDeletePost(postId);
+        if (response?.data.err === 0) {
+          Swal.fire("Đã xóa!", "Tin đăng của bạn đã được xóa.", "success");
+          dispatch(actions.getPostsLimitAdmin());
+        } else {
+          Swal.fire("Oops!", "Xóa tin đăng thất bại", "error");
+        }
+      }
+    });
   };
 
   useEffect(() => {
@@ -58,7 +71,8 @@ const ManagePost = () => {
     } else {
       setPosts(postOfCurrent);
     }
-  }, [status]);
+  }, [status, postOfCurrent]);
+
   return (
     <div className="flex flex-col gap-6 ">
       <div className="py-4 border-b border-gray-200 flex items-center justify-between">
@@ -83,6 +97,7 @@ const ManagePost = () => {
             <th className="border flex-1 p-2">Ngày bắt đầu</th>
             <th className="border flex-1 p-2">Ngày hết hạn</th>
             <th className="border flex-1 p-2">Trạng thái</th>
+            <th className="border flex-1 p-2">Trạng thái duyệt</th>
             <th className="border flex-1 p-2">Actions</th>
           </tr>
         </thead>
@@ -130,6 +145,13 @@ const ManagePost = () => {
                     {checkStatus(item?.overview?.expired?.split(" ")[3])
                       ? "Đang hoạt động"
                       : "Đã hết hạn"}
+                  </td>
+                  <td className="border px-2 flex-1 h-full flex items-center justify-center">
+                    {item?.status === "pending"
+                      ? "Chưa duyệt"
+                      : item?.status === "approved"
+                      ? "Đã duyệt"
+                      : "Không xác định"}
                   </td>
                   <td className="border gap-4 px-2  flex-1 h-full items-center justify-center flex ">
                     <Button

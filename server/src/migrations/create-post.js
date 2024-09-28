@@ -57,6 +57,12 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: "pending",
       },
+      likeCount: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

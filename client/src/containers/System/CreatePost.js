@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import uploadimage from "../../assets/upload-image.png";
-import { Overview, Address, Loading, Button, Map } from "../../components";
-import icons from "../../ultils/icons";
-import { apiUploadImages } from "../../services";
-import { getCodes, getCodesAreas } from "../../ultils/Common/getCodes";
-import { useSelector } from "react-redux";
-import { apiCreatePost, apiUpdatePost } from "../../services";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { validate } from "../../ultils/Common/validateField";
-import { useDispatch } from "react-redux";
+import { Address, Button, Loading, Overview } from "../../components";
+import { apiCreatePost, apiUpdatePost, apiUploadImages } from "../../services";
 import { resetDataEdit } from "../../store/actions";
+import { getCodes, getCodesAreas } from "../../ultils/Common/getCodes";
+import { validate } from "../../ultils/Common/validateField";
 import { noteCreatedPost } from "../../ultils/constant";
+import icons from "../../ultils/icons";
 const { ImBin, AiOutlineCloudUpload } = icons;
 
 const CreatePost = ({ isEdit }) => {
@@ -42,9 +39,7 @@ const CreatePost = ({ isEdit }) => {
 
   const [imagesPreview, setImagesPreview] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { prices, areas, categories, provinces } = useSelector(
-    (state) => state.app
-  );
+  const { prices, areas, categories } = useSelector((state) => state.app);
   const { currentData } = useSelector((state) => state.user);
   const [invalidFields, setInvalidFields] = useState([]);
 
@@ -220,7 +215,7 @@ const CreatePost = ({ isEdit }) => {
             <small>Cập nhất hình ảnh rõ ràng sẽ cho thuê nhanh hơn</small>
             <div className="w-full">
               <label
-                className="w-full border-2 justify-center items-center border-gray-400 flex flex-col gap-4 border-dashed rounded-md h-[200px] my-4 "
+                className="w-2/5 border-2 justify-center items-center border-gray-400 flex flex-col gap-4 border-dashed rounded-md h-[100px] my-2 "
                 htmlFor="file"
               >
                 {isLoading ? (

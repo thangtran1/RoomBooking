@@ -13,19 +13,31 @@ export const getPosts = async (req, res) => {
     });
   }
 };
-
+//.///////////////////////////////////////////////
 export const getPostsLimit = async (req, res) => {
   const {
     page = 1,
     limit = 5,
-    priceNumber,
-    areaNumber,
+    priceMin = [],
+    priceMax = [],
+    areaMax = [],
+    areaMin = [],
     limitPost,
     order,
     ...query
   } = req.query;
 
   try {
+    // Chuyển đổi các tham số priceMin và priceMax thành mảng số
+    const priceNumber =
+      priceMin.length && priceMax.length
+        ? [Number(priceMin), Number(priceMax)]
+        : null;
+    const areaNumber =
+      areaMin.length && areaMax.length
+        ? [Number(areaMin), Number(areaMax)]
+        : null;
+
     const response = await getPostsLimitService(
       page,
       limit,
@@ -45,6 +57,7 @@ export const getPostsLimit = async (req, res) => {
     });
   }
 };
+/////////////////////////////////
 
 export const getNewPosts = async (req, res) => {
   try {
@@ -65,7 +78,7 @@ export const getAllPosts = async (req, res) => {
   } catch (e) {
     return res.status(500).json({
       err: -1,
-      msg: "Failed at post controller.",
+      msg: "Failed at post controllerrrrrrrrrrrrrrrrrrrrrrrrrrrr.",
       e,
     });
   }
@@ -74,13 +87,20 @@ export const getAllPosts = async (req, res) => {
 export const createNewPost = async (req, res) => {
   try {
     const { categoryCode, title, priceNumber, areaNumber, label } = req.body;
-    const { id } = req.user;
+    const { id, role } = req.user; // Lấy role của người dùng từ req.user
     if (!categoryCode || !title || !id || !priceNumber || !areaNumber || !label)
       return res.status(400).json({
         err: 1,
         msg: "Missing inputs",
       });
-    const response = await postService.createNewPostsService(req.body, id);
+
+    // Gọi service với userId và userRole
+    const response = await postService.createNewPostsService(
+      req.body,
+      id,
+      role
+    );
+
     return res.status(200).json(response);
   } catch (e) {
     return res.status(500).json({
@@ -238,6 +258,21 @@ export const updatePostAdmin = async (req, res) => {
     return res.status(500).json({
       err: -1,
       msg: `Failed at updatePostAdmin controller: ${e.message}`,
+    });
+  }
+};
+
+// cập nhật bài viết
+
+export const approvePost = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const response = await postService.approvePostService(id);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at post controller.",
     });
   }
 };

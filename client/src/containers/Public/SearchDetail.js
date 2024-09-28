@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { text } from "../../ultils/constant";
-import { Province, ItemSidebar, RelatedPost } from "../../components";
-import { List, Pagination } from "./index";
-import { getPosts } from "../../services/post";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import * as actions from "../../store/actions";
-import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
+import { ItemSidebar, RelatedPost } from "../../components";
+import { getPosts } from "../../services/post";
+import { List, Pagination } from "./index";
 
 const Rental = () => {
-  const { prices, areas, categories } = useSelector((state) => state.app);
+  const { prices, areas } = useSelector((state) => state.app);
   const [postsData, setPostsData] = useState({ count: 0, rows: [] });
   const [page, setPage] = useState(1);
   const limit = 10;
   const location = useLocation();
-  const dispatch = useDispatch();
-  const [categoryCode, setCategoryCode] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {

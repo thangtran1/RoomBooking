@@ -9,9 +9,16 @@ const targets = [
   { code: "Tất cả", value: "Tất cả" },
 ];
 const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
+  console.log("🚀 ~ Overview ~ payload:", payload);
   const { categories } = useSelector((state) => state.app);
   const { currentData } = useSelector((state) => state.user);
-  const { dataEdit } = useSelector((state) => state.post);
+
+  const handleChangePayload = (e) => {
+    setPayload({
+      ...payload,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <div>
@@ -30,7 +37,7 @@ const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
         </div>
         <InputFormV2
           value={payload.title}
-          setValue={setPayload}
+          onChange={handleChangePayload}
           name="title"
           label="Tiêu đề"
           invalidFields={invalidFields}
@@ -64,7 +71,7 @@ const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
           <InputReadOnly label="Điện thoại" value={currentData?.phone} />
           <InputFormV2
             value={payload.priceNumber}
-            setValue={setPayload}
+            onChange={handleChangePayload}
             small="Nhập đầy đủ số, ví dụ 1 triệu thì nhập 1000000"
             label="Giá cho thuê"
             unit="đồng"
@@ -74,7 +81,7 @@ const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
           />
           <InputFormV2
             value={payload.areaNumber}
-            setValue={setPayload}
+            onChange={handleChangePayload}
             label="Diện tích"
             unit="m2"
             name="areaNumber"

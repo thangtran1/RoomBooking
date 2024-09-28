@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Input, message, Modal, Form, Popconfirm } from "antd";
 import {
-  EditOutlined,
   DeleteOutlined,
+  EditOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { getPosts } from "../../store/actions/post";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popconfirm,
+  Table,
+  Select,
+} from "antd";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPosts } from "../../store/actions/post";
 
 const ManagePostUser = () => {
   const dispatch = useDispatch();
   const { posts, msg } = useSelector((state) => state.post);
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(posts);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
-  const [form] = Form.useForm(); // Khai báo form
+  const [form] = Form.useForm();
 
   useEffect(() => {
     dispatch(getPosts());
@@ -43,17 +53,23 @@ const ManagePostUser = () => {
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
+
     const filtered = posts.filter((post) => {
-      return (
+      const matchesSearchText =
         post.title?.toLowerCase().includes(value) ||
         post.address?.toLowerCase().includes(value) ||
         post.attributes?.acreage?.toString().toLowerCase().includes(value) ||
         post.attributes?.price?.toString().toLowerCase().includes(value) ||
         post.user?.name?.toString().toLowerCase().includes(value) ||
         post.user?.phone?.toString().toLowerCase().includes(value) ||
-        post.user?.zalo?.toString().toLowerCase().includes(value)
-      );
+        post.user?.zalo?.toString().toLowerCase().includes(value) ||
+        post.status?.toLowerCase().includes(value);
+
+      const matchesStatus = !selectedStatus || post.status === selectedStatus;
+
+      return matchesSearchText && matchesStatus;
     });
+
     setFilteredData(filtered);
   };
 
@@ -62,6 +78,42 @@ const ManagePostUser = () => {
     setIsModalOpen(true);
   };
 
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
+
+    const filtered = posts.filter((post) => {
+      const matchesSearchText =
+        post.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        post.address?.toLowerCase().includes(searchText.toLowerCase()) ||
+        post.attributes?.acreage
+          ?.toString()
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        post.attributes?.price
+          ?.toString()
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        post.user?.name
+          ?.toString()
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        post.user?.phone
+          ?.toString()
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        post.user?.zalo
+          ?.toString()
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        post.status?.toLowerCase().includes(searchText.toLowerCase());
+
+      const matchesStatus = !value || post.status === value;
+
+      return matchesSearchText && matchesStatus;
+    });
+
+    setFilteredData(filtered);
+  };
   const handleDelete = async (id) => {
     try {
       await axios.delete(
@@ -86,7 +138,7 @@ const ManagePostUser = () => {
         description: values.description,
       };
 
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/v1/post/update-post/${editingPost.id}`,
         postData
       );
@@ -100,6 +152,27 @@ const ManagePostUser = () => {
       setIsModalOpen(false);
     } catch (error) {
       message.error("Error submitting form");
+      console.error(error);
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/v1/post/approve-post?id=${id}`
+      );
+      message.success(response.data.msg);
+
+      // Cập nhật trạng thái bài đăng
+      setFilteredData((prevData) =>
+        prevData.map((post) =>
+          post.id === id ? { ...post, status: "approved" } : post
+        )
+      );
+
+      dispatch(getPosts());
+    } catch (error) {
+      message.error("Error approving post");
       console.error(error);
     }
   };
@@ -139,6 +212,14 @@ const ManagePostUser = () => {
       render: (text, record) => record.attributes?.price || "N/A",
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span>{status === "pending" ? "Đang chờ" : "Đã duyệt"}</span>
+      ),
+    },
+    {
       title: "Actions",
       key: "action",
       render: (text, record) => (
@@ -151,7 +232,15 @@ const ManagePostUser = () => {
             Sửa
           </Button>
 
-          <Button type="primary">Status</Button>
+          {record.status === "pending" ? (
+            <Button type="primary" onClick={() => handleApprove(record.id)}>
+              Duyệt
+            </Button>
+          ) : (
+            <Button type="default" disabled>
+              Đã duyệt
+            </Button>
+          )}
 
           <Popconfirm
             title="Bạn có chắc chắn xóa bài đăng này?"
@@ -170,7 +259,7 @@ const ManagePostUser = () => {
 
   return (
     <div>
-      <h2 className="flex items-center justify-center font-semibold uppercase mb-2 ">
+      <h2 className="flex items-center justify-center font-semibold uppercase mb-2">
         Quản lý bài đăng từ khách hàng
       </h2>
       {msg && <p>{msg}</p>}
@@ -182,6 +271,16 @@ const ManagePostUser = () => {
           onChange={handleSearch}
           style={{ marginBottom: 16, width: 300 }}
         />
+        <Select
+          placeholder="Chọn trạng thái"
+          value={selectedStatus}
+          onChange={handleStatusChange}
+          style={{ marginBottom: 16, width: 200 }}
+        >
+          <Select.Option value="">Tất cả</Select.Option>
+          <Select.Option value="pending">Đang chờ</Select.Option>
+          <Select.Option value="approved">Đã duyệt</Select.Option>
+        </Select>
       </div>
       <Table
         columns={columns}

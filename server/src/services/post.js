@@ -9,7 +9,7 @@ export const getPostsService = () =>
     try {
       const response = await db.Post.findAll({
         raw: true,
-        nest: true, // vd image.image => gộp thành 1 objec image: [...]
+        nest: true,
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
           {
@@ -19,7 +19,9 @@ export const getPostsService = () =>
           },
           { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
         ],
-        attributes: ["id", "title", "star", "address", "description"],
+        attributes: ["id", "title", "star", "address", "description", "status"],
+
+        order: [["createdAt", "DESC"]],
       });
       resolve({
         err: response ? 0 : 1,
@@ -30,7 +32,7 @@ export const getPostsService = () =>
       reject(e);
     }
   });
-
+//////////////////////////////////////////
 export const getPostsLimitService = (
   page,
   limit,
@@ -46,10 +48,19 @@ export const getPostsLimitService = (
       queries.limit = +limitPost || +limit || +process.env.LIMIT;
       queries.offset = queries.limit * (page - 1);
 
-      if (priceNumber && priceNumber.length === 2)
+      // Thiết lập trạng thái mặc định
+      if (!query.status) {
+        query.status = "approved";
+      }
+
+      // Kiểm tra và xử lý điều kiện priceNumber
+      if (priceNumber && priceNumber.length === 2) {
         query.priceNumber = { [Op.between]: priceNumber };
-      if (areaNumber && areaNumber.length === 2)
+      }
+
+      if (areaNumber && areaNumber.length === 2) {
         query.areaNumber = { [Op.between]: areaNumber };
+      }
 
       if (order) queries.order = [order];
 
@@ -74,7 +85,7 @@ export const getPostsLimitService = (
             attributes: { exclude: ["createdAt", "updatedAt"] },
           },
         ],
-        attributes: ["id", "title", "star", "address", "description"],
+        attributes: ["id", "title", "star", "address", "description", "status"],
       });
 
       resolve({
@@ -86,6 +97,7 @@ export const getPostsLimitService = (
       reject(e);
     }
   });
+///////////////////////////////////////
 export const getNewPostService = async () => {
   try {
     const response = await db.Post.findAll({
@@ -118,8 +130,7 @@ export const getNewPostService = async () => {
 export const getAllPosts = async (query) => {
   const limit = query.limit ? +query.limit : 10;
   const page = +query.page > 0 ? +query.page : 1;
-  const priceCode = query.priceCode;
-  const areaCode = query.areaCode;
+  const status = query.status;
   const categoryCode = query.categoryCode;
   const provinceCode = query.provinceCode;
 
@@ -133,6 +144,9 @@ export const getAllPosts = async (query) => {
   const whereArea = {};
   const whereCategory = {};
   const whereProvince = {};
+  const whereStatus = {};
+
+  if (status) whereStatus.status = status;
 
   if (priceMin) wherePrice[Op.gte] = priceMin;
   if (priceMax) wherePrice[Op.lte] = priceMax;
@@ -140,12 +154,6 @@ export const getAllPosts = async (query) => {
   if (areaMin) whereArea[Op.gte] = areaMin;
   if (areaMax) whereArea[Op.lte] = areaMax;
 
-  if (areaCode) {
-    whereArea.code = areaCode;
-  }
-  if (priceCode) {
-    wherePrice.code = priceCode;
-  }
   if (categoryCode) {
     whereCategory.code = categoryCode;
   }
@@ -156,13 +164,14 @@ export const getAllPosts = async (query) => {
   try {
     const response = await db.Post.findAndCountAll({
       raw: true,
-      nest: true, // vd image.image => gộp thành 1 objec image: [...]
+      nest: true, // vd image.image => gộp thành  1 objec image: [...]
       offset: limit * (page - 1),
       limit: limit,
       order: [["createdAt", "DESC"]],
       where: {
         priceNumber: { [Op.and]: wherePrice },
         areaNumber: { [Op.and]: whereArea },
+        ...whereStatus,
       },
       include: [
         { model: db.Image, as: "images", attributes: ["image"] },
@@ -185,6 +194,7 @@ export const getAllPosts = async (query) => {
         "description",
         "priceNumber",
         "areaNumber",
+        "status",
       ],
     });
 
@@ -199,7 +209,7 @@ export const getAllPosts = async (query) => {
   }
 };
 
-export const createNewPostsService = (body, userId) =>
+export const createNewPostsService = (body, userId, userRole) =>
   new Promise(async (resolve, reject) => {
     try {
       const attributesId = generateId();
@@ -208,6 +218,9 @@ export const createNewPostsService = (body, userId) =>
       const labelCode = generateCode(body.label);
       const hashtag = `#${Math.floor(Math.random() * Math.pow(10, 6))}`;
       const currentDate = generateDate();
+
+      const status = userRole === "admin" ? "approved" : "pending";
+
       await db.Post.create({
         id: generateId(),
         title: body.title,
@@ -224,8 +237,9 @@ export const createNewPostsService = (body, userId) =>
         provinceCode: body?.province?.includes("Thành phố")
           ? generateCode(body?.province?.replace("Thành phố ", ""))
           : generateCode(body?.province?.replace("Tỉnh ", "")) || null,
-        priceNumber: +body.priceNumber * 1000000,
+        priceNumber: +body.priceNumber,
         areaNumber: body.areaNumber,
+        status: "pending",
       });
 
       await db.Attribute.create({
@@ -238,10 +252,12 @@ export const createNewPostsService = (body, userId) =>
         published: moment(new Date()).format("DD/MM/YYYY"),
         hashtag,
       });
+
       await db.Image.create({
         id: imagesId,
         image: JSON.stringify(body.images),
       });
+
       await db.Overview.create({
         id: overviewId,
         code: hashtag,
@@ -252,6 +268,7 @@ export const createNewPostsService = (body, userId) =>
         created: currentDate.today,
         expired: currentDate.expireDay,
       });
+
       await db.Province.findOrCreate({
         where: {
           [Op.or]: [
@@ -317,7 +334,7 @@ export const getPostsLimitAdminService = (
 
           { model: db.Overview, as: "overview" },
         ],
-        // attributes: ["id", "title", "star", "address", "description"],
+        // attributes: ["id", "title", "star", "address", "description", "status"],
       });
       resolve({
         err: response ? 0 : 1,
@@ -522,3 +539,27 @@ export const updatePostAdminService = (id, postData) =>
       });
     }
   });
+
+export const approvePostService = async (id) => {
+  try {
+    const post = await db.Post.findOne({ where: { id } });
+
+    if (!post) {
+      return {
+        err: 1,
+        msg: "Post not found.",
+      };
+    }
+
+    post.status = "approved";
+    await post.save();
+
+    return {
+      err: 0,
+      msg: "Post approved successfully.",
+      post,
+    };
+  } catch (e) {
+    throw e;
+  }
+};

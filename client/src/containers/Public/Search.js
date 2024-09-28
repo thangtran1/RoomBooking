@@ -38,7 +38,7 @@ const Search = () => {
 
   const [defaultText, setDefaultText] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
-  const [modalType, setModalType] = useState(null); // Thêm để quản lý loại modal (price hoặc area)
+  const [modalType, setModalType] = useState(null);
   const [price, setPrice] = useState({
     priceMin: Number(priceMin) ?? "",
     priceMax: Number(priceMax) ?? "",
@@ -64,10 +64,10 @@ const Search = () => {
 
   const renderPriceLabel = () => {
     if (price.priceMin && price.priceMax) {
-      return `${price.priceMin} - ${price.priceMax} triệu`;
+      return ` ${price.priceMin} - ${price.priceMax} triệu`;
     }
     if (price.priceMin && !price.priceMax) {
-      return `Trên ${price.priceMin} triệu`;
+      return ` Trên ${price.priceMin} triệu`;
     }
     if (!price.priceMin && price.priceMax) {
       return `Dưới ${price.priceMax} triệu`;
@@ -121,6 +121,7 @@ const Search = () => {
         >
           <SearchItem
             IconBefore={<SlLocationPin />}
+            fontWieght
             IconAfter={<BsChevronRight color="rgb(156, 163 175" />}
             text={province.label}
             defaultText={"Toàn quốc"}

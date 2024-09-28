@@ -7,9 +7,6 @@ export const getOne = (id) =>
       const response = await db.User.findOne({
         where: { id },
         raw: true,
-        attributes: {
-          exclude: ["password", "avatar"],
-        },
       });
       resolve({
         err: response ? 0 : 1,
@@ -95,5 +92,25 @@ export const deleteUserService = (id) =>
         err: -1,
         msg: `Failed at user service: ${e.message}`,
       });
+    }
+  });
+
+export const updateUser = (id, data) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const [updatedCount, updatedRows] = await db.User.update(data, {
+        where: { id },
+      });
+
+      resolve({
+        err: updatedCount ? 0 : 1,
+        msg: updatedCount
+          ? "User updated successfully!"
+          : "Failed to update user.",
+        response: updatedRows,
+      });
+    } catch (e) {
+      console.error("Error updating user:", e);
+      reject(e);
     }
   });

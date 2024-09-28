@@ -208,7 +208,7 @@ const Modal = ({
                 </>
               )}
             </div>
-            <div className="mt-24">
+            <div className="mt-2">
               <h4 className="font-bold mb-6">Chọn nhanh:</h4>
               <div className="flex gap-2 items-center flex-wrap w-full">
                 {name === "prices" &&

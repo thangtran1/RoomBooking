@@ -62,3 +62,5 @@ export const noteCreatedPost = [
   "Để tăng độ tin cậy và tin rao được nhiều người quan tâm hơn, hãy sửa vị trí tin rao của bạn trên bản đồ bằng cách kéo icon tới đúng vị trí của tin rao.",
   "Tin đăng có hình ảnh rõ ràng sẽ được xem và gọi gấp nhiều lần so với tin rao không có ảnh. Hãy đăng ảnh để được giao dịch nhanh chóng!",
 ];
+
+export const NUMBER_REGEX = /^[0-9]*$/;

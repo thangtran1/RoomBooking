@@ -12,7 +12,6 @@ import {
 import { path } from "./ultils/constant";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Navigate } from "react-router-dom";
 import {
   System,
   CreatePost,
@@ -34,13 +33,13 @@ function App() {
     setTimeout(() => {
       isLoggedIn && dispatch(actions.getCurrent());
     }, 1000);
-  }, [isLoggedIn]);
+  }, [isLoggedIn, dispatch]);
 
   useEffect(() => {
     dispatch(actions.getPrices());
     dispatch(actions.getAreas());
     dispatch(actions.getProvinces());
-  }, []);
+  }, [dispatch]);
   return (
     <div className=" bg-primary overflow-hidden">
       <ToastContainer />

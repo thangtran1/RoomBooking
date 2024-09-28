@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import anonAvatar from "../../assets/anon.avatar.png";
-import { useSelector, useDispatch } from "react-redux";
-import menuSidebar from "../../ultils/menuSidebar";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import anonAvatar from "../../assets/anon.avatar.png";
 import * as actions from "../../store/actions";
-import { blobToBase64 } from "../../ultils/Common/toBase64";
 import icons from "../../ultils/icons";
+import menuSidebar from "../../ultils/menuSidebar";
 
 const { MdManageAccounts, AiOutlineLogout, BiUserPin, TbCategory, TbArticle } =
   icons;
@@ -37,7 +36,7 @@ const Sidebar = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-4">
           <img
-            src={blobToBase64(currentData?.avatar) || anonAvatar}
+            src={currentData?.avatar || anonAvatar}
             alt="avatar"
             className="w-12 h-12 object-cover rounded-full border-2 border-white"
           />

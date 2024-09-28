@@ -8,21 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      Post.belongsTo(models.Image, {
-        foreignKey: "imagesId",
-        targetKey: "id",
-        as: "images",
-      });
+      Post.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+      Post.belongsTo(models.Image, { foreignKey: "imagesId", as: "images" });
       Post.belongsTo(models.Attribute, {
         foreignKey: "attributesId",
-        targetKey: "id",
         as: "attributes",
-      });
-      Post.belongsTo(models.User, {
-        foreignKey: "userId",
-        targetKey: "id",
-        as: "user",
       });
       Post.belongsTo(models.Price, {
         foreignKey: "priceCode",
@@ -46,18 +36,13 @@ module.exports = (sequelize, DataTypes) => {
       });
       Post.belongsTo(models.Overview, {
         foreignKey: "overviewId",
-        targetKey: "id",
         as: "overview",
       });
       Post.belongsTo(models.Label, {
         foreignKey: "labelCode",
-        targetKey: "code",
         as: "labelData",
       });
-      Post.hasMany(models.Favorite, {
-        foreignKey: "postId",
-        as: "favourite",
-      });
+      Post.hasMany(models.Favorite, { foreignKey: "postId", as: "favorites" });
     }
   }
   Post.init(
@@ -80,6 +65,10 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         type: DataTypes.STRING,
         defaultValue: "pending",
+      },
+      likeCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
     },
     {

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { text } from "../../ultils/constant";
-import { Province, ItemSidebar, RelatedPost } from "../../components";
-import { List, Pagination } from "./index";
-import { getPosts } from "../../services/post";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { ItemSidebar, Province, RelatedPost } from "../../components";
+import { getPosts } from "../../services/post";
 import * as actions from "../../store/actions";
 import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
+import { List, Pagination } from "./index";
 
 const Rental = () => {
   const { prices, areas, categories } = useSelector((state) => state.app);

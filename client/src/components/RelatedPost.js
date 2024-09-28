@@ -11,10 +11,10 @@ const RelatedPost = ({ newPost }) => {
     newPost
       ? dispatch(actions.getNewPosts())
       : dispatch(actions.getOutstandingPost());
-  }, []);
+  }, [dispatch, newPost]);
   useEffect(() => {
     newPost ? setPosts(newPosts) : setPosts(outStandingPost);
-  }, [outStandingPost, newPosts]);
+  }, [outStandingPost, newPosts, newPost]);
 
   return (
     <div className="w-full bg-white rounded-md p-4">

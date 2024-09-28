@@ -11,5 +11,7 @@ router.delete("/user/:id", userController.deleteUser);
 router.put("/update/:id", userController.updateUserUD);
 router.use(verifyToken);
 router.get("/get-current", userController.getCurrent);
+router.put("/update-phone", userController.updatePhone);
+router.put("/update-password", userController.updatePassword);
 
 export default router;

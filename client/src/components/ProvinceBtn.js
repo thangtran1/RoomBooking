@@ -19,6 +19,7 @@ const ProvinceBtn = ({ name, image, provinceCode }) => {
     >
       <img
         src={image}
+        alt="provinceImage"
         className="w-[190px] h-[110px] object-cover rounded-tr-md rounded-tl-md"
       />
       <div className="font-medium text-blue-700 p-2 text-center  hover:text-orange-600">

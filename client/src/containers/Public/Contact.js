@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { InputForm, Button } from "../../components";
-import Swal from "sweetalert2";
 import axios from "axios";
+import React, { useState } from "react";
+import Swal from "sweetalert2";
+import { Button, InputForm } from "../../components";
 
 const Contact = () => {
   const [payload, setPayload] = useState({
@@ -10,17 +10,37 @@ const Contact = () => {
     content: "",
   });
 
+  const regexPhone = /^(0[1-9]{1}[0-9]{8}|84[1-9]{1}[0-9]{8})$/;
+
   const handleSubmit = async () => {
+    // Kiểm tra số điện thoại
+    if (!payload.phone.trim()) {
+      Swal.fire("Lỗi", "Số điện thoại không được để trống!", "error");
+      return;
+    }
+
+    if (!regexPhone.test(payload.phone.trim())) {
+      Swal.fire("Lỗi", "Số điện thoại không hợp lệ!", "error");
+      return;
+    }
+
+    // Kiểm tra nội dung mô tả
+    if (!payload.content.trim()) {
+      Swal.fire("Lỗi", "Nội dung mô tả không được để trống!", "error");
+      return;
+    }
+
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/v1/contact/create-contact",
         payload
       );
       Swal.fire(
-        `Thanks ${payload.name ? payload.name : ""}`,
+        `Cảm ơn ${payload.name ? payload.name : ""}`,
         "Phản hồi của bạn đã được chúng tôi ghi nhận",
         "success"
       ).then(() => {
+        // Reset form sau khi gửi thành công
         setPayload({
           name: "",
           phone: "",

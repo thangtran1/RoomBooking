@@ -27,3 +27,4 @@ export { default as UpdatePost } from "./UpdatePost";
 export { default as Slider } from "./Slider";
 export { default as Map } from "./Map";
 export { default as BookInfor } from "./BookInfor";
+export { default as CountLikePost } from "./CountLikePost";

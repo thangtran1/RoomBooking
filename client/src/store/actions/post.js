@@ -113,8 +113,7 @@ export const getPostsLimitAdmin = (query) => async (dispatch) => {
     } else {
       dispatch({
         type: actionTypes.GET_POSTS_ADMIN,
-        posts: response.data.msg,
-        posts: null,
+        posts: response.data.msg || null,
       });
     }
   } catch (e) {

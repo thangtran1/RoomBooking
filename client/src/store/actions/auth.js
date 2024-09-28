@@ -10,17 +10,20 @@ export const register = (payload) => async (dispatch) => {
         type: actionTypes.REGISTER_SUCCESS,
         data: respone.data.token,
       });
+      return { success: true };
     } else {
       dispatch({
         type: actionTypes.REGISTER_FAIL,
         data: respone.data.msg,
       });
+      return { success: false, msg: respone.data.msg };
     }
   } catch (e) {
     dispatch({
       type: actionTypes.REGISTER_FAIL,
       data: null,
     });
+    return { success: false, msg: "Đăng ký thất bại" };
   }
 };
 
@@ -33,17 +36,20 @@ export const login = (payload) => async (dispatch) => {
         type: actionTypes.LOGIN_SUCCESS,
         data: respone.data.token,
       });
+      return { success: true };
     } else {
       dispatch({
         type: actionTypes.LOGIN_FAIL,
         data: respone.data.msg,
       });
+      return { success: false, msg: respone.data.msg };
     }
   } catch (e) {
     dispatch({
       type: actionTypes.LOGIN_FAIL,
       data: null,
     });
+    return { success: false, msg: "Đăng nhập thất bại" };
   }
 };
 

@@ -1,41 +1,62 @@
+import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { InputReadOnly, InputFormV2, Button } from "../../components";
-import anonAvatar from "../../assets/anon.avatar.png";
-import { apiUpdateUser } from "../../services";
-import { fileToBase64, blobToBase64 } from "../../ultils/Common/toBase64";
-import { getCurrent } from "../../store/actions";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import anonAvatar from "../../assets/anon.avatar.png";
+import { Button, InputFormV2, InputReadOnly } from "../../components";
+import {
+  apiUpdatePassword,
+  apiUpdatePhone,
+  apiUpdateUser,
+} from "../../services";
+import { FaTrash } from "react-icons/fa";
+import { getCurrent } from "../../store/actions";
+import { fileToBase64 } from "../../ultils/Common/toBase64";
 
 const EditAccount = () => {
   const { currentData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [payload, setPayload] = useState({
+  const [userInfo, setUserInfo] = useState({
     name: "",
     avatar: "",
     fbUrl: "",
     zalo: "",
   });
+  const [newPhone, setNewPhone] = useState("");
+  const [oldPhone, setOldPhone] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [isPhoneModalVisible, setIsPhoneModalVisible] = useState(false);
+  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
+  const [isAvatarSelected, setIsAvatarSelected] = useState(false); // Trạng thái theo dõi ảnh đại diện
 
   useEffect(() => {
     if (currentData) {
-      setPayload({
+      setUserInfo({
         name: currentData.name || "",
-        avatar: currentData?.avatar ? blobToBase64(currentData.avatar) : "",
+        avatar: currentData?.avatar ?? "",
         fbUrl: currentData.fbUrl || "",
         zalo: currentData.zalo || "",
       });
+      setNewPhone(currentData.phone || "");
+      setOldPhone(currentData.phone || "");
+      setIsAvatarSelected(!!currentData.avatar); // Đặt trạng thái theo dõi ảnh đại diện
     }
   }, [currentData]);
+
+  const handleChangeUserInfo = (e) => {
+    setUserInfo({
+      ...userInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async () => {
     try {
       const response = await apiUpdateUser(currentData?.id, {
-        ...payload,
-        avatar: payload.avatar || "",
+        ...userInfo,
+        avatar: userInfo.avatar || "",
       });
-
-      console.log("response: ", response);
 
       if (response?.data.msg === "User updated successfully!") {
         Swal.fire(
@@ -58,12 +79,92 @@ const EditAccount = () => {
     }
   };
 
+  const handleUpdatePhone = async () => {
+    try {
+      const response = await apiUpdatePhone({ phone: newPhone });
+      console.log("Response from server:", response);
+
+      if (response?.data.msg === "User updated successfully!") {
+        Swal.fire("Done", "Cập nhật số điện thoại thành công", "success").then(
+          () => {
+            dispatch(getCurrent());
+          }
+        );
+        setIsPhoneModalVisible(false);
+      } else {
+        Swal.fire(
+          "Oops!",
+          response?.data?.msg || "Cập nhật số điện thoại không thành công",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating phone:", error);
+      Swal.fire(
+        "Error",
+        "Có lỗi xảy ra trong quá trình cập nhật số điện thoại!",
+        "error"
+      );
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!oldPassword || !newPassword) {
+      Swal.fire("Oops!", "Vui lòng nhập đầy đủ mật khẩu cũ và mới", "error");
+      return;
+    }
+
+    try {
+      const response = await apiUpdatePassword({
+        oldPassword,
+        newPassword,
+      });
+
+      if (
+        response?.data.err === 1 &&
+        response.data.msg === "Old password is incorrect"
+      ) {
+        Swal.fire("Oops!", "Mật khẩu cũ không chính xác", "error");
+      } else if (
+        response?.data.err === 0 &&
+        response.data.msg === "User updated successfully!"
+      ) {
+        Swal.fire("Done", "Cập nhật mật khẩu thành công", "success");
+        setOldPassword("");
+        setNewPassword("");
+        setIsPasswordModalVisible(false);
+      } else {
+        Swal.fire(
+          "Oops!",
+          response?.data?.msg ||
+            "Đã xảy ra lỗi khi cập nhật mật khẩu. Vui lòng thử lại sau.",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      Swal.fire(
+        "Error",
+        "Có lỗi xảy ra trong quá trình cập nhật mật khẩu!",
+        "error"
+      );
+    }
+  };
   const handleUploadFile = async (e) => {
     const imageBase64 = await fileToBase64(e.target.files[0]);
-    setPayload((prev) => ({
+    setUserInfo((prev) => ({
       ...prev,
       avatar: imageBase64,
     }));
+    setIsAvatarSelected(true); // Đặt trạng thái ảnh đã được chọn
+  };
+
+  const handleRemoveAvatar = () => {
+    setUserInfo((prev) => ({
+      ...prev,
+      avatar: "",
+    }));
+    setIsAvatarSelected(false); // Đặt lại trạng thái khi xóa ảnh
   };
 
   return (
@@ -77,63 +178,95 @@ const EditAccount = () => {
             direction="flex-row"
             label="Mã thành viên"
             value={
-              `#${currentData?.id?.match(/\d/g).join("")?.slice(0, 6)}` || ""
+              `#${currentData?.id?.match(/\d/g).join("").slice(0, 6)}` || ""
             }
           />
-          <InputReadOnly
-            editPhone
-            direction="flex-row"
-            label="Số điện thoại"
-            value={currentData?.phone || ""}
-          />
+          <div>
+            <InputReadOnly
+              direction="flex-row"
+              label="Số điện thoại"
+              value={currentData?.phone || ""}
+            />
+            <p
+              className="text-blue-600 cursor-pointer hover:underline ml-48"
+              onClick={() => {
+                setNewPhone("");
+                setIsPhoneModalVisible(true);
+              }}
+            >
+              Đổi số điện thoại
+            </p>
+          </div>
+
           <InputFormV2
-            setValue={setPayload}
+            onChange={handleChangeUserInfo}
             name="name"
             label="Tên hiển thị"
             direction="flex-row"
-            value={payload.name}
+            value={userInfo.name}
           />
           <InputFormV2
-            setValue={setPayload}
+            onChange={handleChangeUserInfo}
             name="zalo"
             direction="flex-row"
             label="Zalo"
-            value={payload.zalo}
+            value={userInfo.zalo}
           />
           <InputFormV2
-            setValue={setPayload}
+            onChange={handleChangeUserInfo}
             name="fbUrl"
             direction="flex-row"
             label="Facebook"
-            value={payload.fbUrl}
+            value={userInfo.fbUrl}
           />
-          <div className="flex">
-            <label className="w-48 flex-none" htmlFor="Password">
-              Mật khẩu
-            </label>
-            <small className="flex-auto text-blue-500 h-12 cursor-pointer">
+
+          <div className=" flex gap-32 mb-5">
+            <p className="cursor-default">Mật khẩu</p>
+            <p
+              className="text-blue-600 cursor-pointer hover:underline"
+              onClick={() => setIsPasswordModalVisible(true)}
+            >
               Đổi mật khẩu
-            </small>
+            </p>
           </div>
-          <div className="flex mb-6">
+          <div className="flex mb-10">
             <label className="w-48 flex-none" htmlFor="avatar">
               Ảnh đại diện
             </label>
-            <div>
+            <div className="flex flex-col items-start">
               <img
-                src={payload.avatar || anonAvatar}
+                src={userInfo.avatar || anonAvatar}
                 alt="avatar"
-                className="w-28 h-28 rounded-full object-cover"
+                className="w-28 h-28 rounded-full object-cover mb-2"
               />
               <input
                 onChange={handleUploadFile}
                 type="file"
-                className="appearance-none my-4"
+                id="avatar"
+                className="hidden"
+                accept="image/*"
               />
+              <label
+                htmlFor="avatar"
+                className=" flex items-center justify-center w-24 cursor-pointer hover:underline p-2 bg-gray-200 text-black rounded mb-2"
+              >
+                Chọn ảnh
+              </label>
+              <div className="flex items-center">
+                {isAvatarSelected && (
+                  <button
+                    onClick={handleRemoveAvatar}
+                    className="flex items-center justify-center w-24 text-red-600 cursor-pointer hover:underline p-2 bg-gray-200 rounded"
+                  >
+                    <FaTrash className="mr-1" />
+                    Xóa
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <Button
-            text="Cập nhật"
+            text="Cập nhật thông tin"
             bgColor="bg-blue-600"
             textColor="text-white"
             onClick={handleSubmit}
@@ -141,6 +274,57 @@ const EditAccount = () => {
           <div className="mb-20"></div>
         </div>
       </div>
+
+      {/* Modal cập nhật số điện thoại */}
+      <Modal
+        title="Cập nhật số điện thoại"
+        open={isPhoneModalVisible}
+        onCancel={() => setIsPhoneModalVisible(false)}
+        onOk={handleUpdatePhone}
+      >
+        <div className="flex flex-col gap-2 mt-5">
+          <InputReadOnly
+            direction="flex-row"
+            label="Số điện thoại cũ"
+            value={oldPhone}
+          />
+          <InputFormV2
+            onChange={(e) => setNewPhone(e.target.value)}
+            name="newPhone"
+            label="Số điện thoại mới"
+            type="number"
+            direction="flex-row"
+            value={newPhone}
+          />
+        </div>
+      </Modal>
+
+      {/* Modal cập nhật mật khẩu */}
+      <Modal
+        title="Cập nhật mật khẩu"
+        open={isPasswordModalVisible}
+        onCancel={() => setIsPasswordModalVisible(false)}
+        onOk={handleUpdatePassword}
+      >
+        <div className="flex flex-col gap-2 mt-5">
+          <InputFormV2
+            onChange={(e) => setOldPassword(e.target.value)}
+            name="oldPassword"
+            label="Mật khẩu cũ"
+            direction="flex-row"
+            type="password"
+            value={oldPassword}
+          />
+          <InputFormV2
+            onChange={(e) => setNewPassword(e.target.value)}
+            name="newPassword"
+            label="Mật khẩu mới"
+            direction="flex-row"
+            type="password"
+            value={newPassword}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

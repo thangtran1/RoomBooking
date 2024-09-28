@@ -40,15 +40,15 @@ const Header = () => {
 
   return (
     <div className="w-full">
-      <div className="w-4/5 ml-auto mr-auto flex items-center justify-between">
+      <div className=" w-4/5 mx-auto flex items-center justify-between flex-wrap">
         <Link to={"/"}>
           <img
             src={removeBgLogo}
             alt="logo"
-            className="w-[240px] h-[70px] object-contain"
+            className="w-[240px] h-[70px] object-contain hidden lg:block"
           />
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
           {!isLoggedIn ? (
             <div className="flex items-center gap-1">
               <small>PhongtroLaLaHome.com xin chào !</small>

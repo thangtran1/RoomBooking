@@ -11,6 +11,7 @@ const authReducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.REGISTER_SUCCESS:
     case actionTypes.LOGIN_SUCCESS:
+      localStorage.setItem("accessToken", action.data);
       return {
         ...state,
         isLoggedIn: true,
@@ -28,6 +29,7 @@ const authReducer = (state = initState, action) => {
       };
 
     case actionTypes.LOGOUT:
+      localStorage.removeItem("accessToken");
       return {
         ...state,
         isLoggedIn: false,

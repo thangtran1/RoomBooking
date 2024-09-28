@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import {
+  BookInfor,
+  CountLikePost,
+  RelatedPost,
+  Slider,
+} from "../../components";
 import { getPostsLimit } from "../../store/actions";
-import { Slider } from "../../components";
+import { path, underMap } from "../../ultils/constant";
 import icons from "../../ultils/icons";
-import { underMap } from "../../ultils/constant";
-import { Map, BookInfor, RelatedPost } from "../../components";
-import { useNavigate, createSearchParams } from "react-router-dom";
-import { path } from "../../ultils/constant";
 const { FaLocationDot, TbReportMoney, RiCrop2Line, BsStopwatch, BsHash } =
   icons;
 const DetailPost = () => {
@@ -18,7 +20,7 @@ const DetailPost = () => {
 
   useEffect(() => {
     postId && dispatch(getPostsLimit({ id: postId }));
-  }, [postId]);
+  }, [postId, dispatch]);
 
   const handleFilterLabel = () => {
     const titleSearch = `Tìm kiếm tin đăng theo chuyên mục ${posts[0]?.labelData?.value}`;
@@ -159,6 +161,7 @@ const DetailPost = () => {
       </div>
       <div className="w-[30%] flex flex-col">
         <BookInfor userData={posts[0]?.user} />
+        <CountLikePost />
         <RelatedPost />
         <RelatedPost newPost />
       </div>

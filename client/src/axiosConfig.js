@@ -8,15 +8,13 @@ instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     // găn token vào header
-    let token =
-      window.localStorage.getItem("persist:auth") &&
-      JSON.parse(window.localStorage.getItem("persist:auth"))?.token?.slice(
-        1,
-        -1
-      );
-    config.headers = {
-      authorization: token ? `Bearer ${token}` : null,
-    };
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers = {
+        authorization: `Bearer ${accessToken}`,
+      };
+    }
+
     return config;
   },
   function (error) {
@@ -33,6 +31,7 @@ instance.interceptors.response.use(
     return response;
   },
   function (error) {
+    console.log("🚀 ~ error:", error);
     return Promise.reject(error);
   }
 );

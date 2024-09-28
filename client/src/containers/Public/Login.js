@@ -19,7 +19,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigate]);
 
   useEffect(() => {
     if (msg) {
@@ -36,11 +36,31 @@ const Login = () => {
         };
 
     if (isRegister) {
-      dispatch(actions.register(finalPayload));
+      dispatch(actions.register(finalPayload)).then((res) => {
+        if (res.success) {
+          Swal.fire("Thành công!", "Đăng ký tài khoản thành công!", "success");
+          navigate("/");
+        } else {
+          Swal.fire("Oops!", res.msg || "Đăng ký thất bại", "error");
+        }
+      });
     } else {
-      dispatch(actions.login(finalPayload));
+      dispatch(actions.login(finalPayload)).then((res) => {
+        if (res.success) {
+          Swal.fire("Thành công!", "Đăng nhập thành công!", "success");
+          navigate("/");
+        } else {
+          Swal.fire("Oops!", res.msg || "Đăng nhập thất bại", "error");
+        }
+      });
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   const validateField = (rule, value) => {
     if (!value || value.trim() === "") {
@@ -59,16 +79,10 @@ const Login = () => {
     if (!trimmedValue) {
       return Promise.reject(new Error("Số điện thoại không hợp lệ"));
     }
-
-    const hasZero = trimmedValue.startsWith("0");
-    const isValidLength = hasZero
-      ? trimmedValue.length === 10
-      : trimmedValue.length === 9;
-
-    if (!isValidLength || !/^[0-9]+$/.test(trimmedValue)) {
+    const regex = /^(0[1-9]{1}[0-9]{8}|84[1-9]{1}[0-9]{8})$/;
+    if (!regex.test(trimmedValue)) {
       return Promise.reject(new Error("Số điện thoại không hợp lệ"));
     }
-
     return Promise.resolve();
   };
 
@@ -99,7 +113,7 @@ const Login = () => {
             label="Số Điện Thoại"
             rules={[{ validator: validatePhoneNumber }]}
           >
-            <Input />
+            <Input autoComplete="username" />
           </Form.Item>
 
           <Form.Item
@@ -110,7 +124,7 @@ const Login = () => {
               { min: 6, message: "Mật khẩu phải có tối thiểu 6 kí tự" },
             ]}
           >
-            <Input.Password />
+            <Input.Password autoComplete="current-password" />
           </Form.Item>
 
           <Form.Item>

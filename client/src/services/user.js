@@ -25,3 +25,11 @@ export const apiUpdateUser = (id, payload) =>
       reject(e);
     }
   });
+
+export const apiUpdatePhone = (data) => {
+  return axios.put("/api/v1/user/update-phone", data);
+};
+
+export const apiUpdatePassword = (data) => {
+  return axios.put("/api/v1/user/update-password", data);
+};

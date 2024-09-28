@@ -14,7 +14,10 @@ router.get("/getUserPost", postController.getPostUser);
 router.delete("/delete-post", postController.deletePostAdmin);
 router.put("/update-post/:id", postController.updatePostAdmin);
 
+router.put("/approve-post", postController.approvePost);
+
 router.use(verifyToken);
+
 router.post(`/create-new`, postController.createNewPost);
 router.get(`/limit-admin`, postController.getPostsLimitAdmin);
 

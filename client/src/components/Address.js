@@ -83,7 +83,7 @@ const Address = ({ setPayload, invalidFields, setInvalidFields }) => {
             ?.province_name
         : "",
     }));
-  }, [province, district]);
+  }, [district, districts, province, provinces, setPayload]);
   return (
     <div>
       <h2 className="font-semibold text-xl py-4">Địa chỉ cho thuê</h2>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PageNumber } from "../../components";
-import { useSelector } from "react-redux";
 import icons from "../../ultils/icons";
 
 const { GrLinkNext } = icons;

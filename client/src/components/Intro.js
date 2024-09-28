@@ -4,7 +4,6 @@ import icons from "../ultils/icons";
 import { Button } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
 const { TfiStar } = icons;
 const star = [1, 2, 3, 4, 5];
 const Intro = () => {
@@ -20,7 +19,7 @@ const Intro = () => {
             categories.map((item) => {
               return (
                 <Link
-                  to={`/${formatVietnameseToString(item.value)}`}
+                  to={`/?categoryCode=${item.code}`} // Sửa lại đây để thêm categoryCode vào query params
                   key={item.code}
                   className="text-blue-600 font-medium hover:text-orange-600"
                 >

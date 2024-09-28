@@ -17,7 +17,6 @@ const Navigation = ({ isAdmin }) => {
   const queryParams = Object.fromEntries([...searchParams]);
   const categoryCode = queryParams.categoryCode;
 
-  // Sử dụng useLocation để kiểm tra URL hiện tại
   const location = useLocation();
   const { pathname } = location;
 
@@ -25,7 +24,6 @@ const Navigation = ({ isAdmin }) => {
     dispatch(actions.getCategories());
   }, [dispatch]);
 
-  // Cuộn lên đầu trang khi URL thay đổi
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location]);

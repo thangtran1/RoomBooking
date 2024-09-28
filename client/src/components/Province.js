@@ -3,7 +3,7 @@ import { ProvinceBtn } from "./index";
 import { location } from "../ultils/constant";
 const Province = () => {
   return (
-    <div className="flex items-center justify-center gap-6 py-5 shadow-md">
+    <div className="flex flex-wrap items-center justify-center gap-6 py-5 shadow-mdz">
       {location.map((item) => {
         return (
           <ProvinceBtn

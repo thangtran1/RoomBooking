@@ -7,4 +7,5 @@ router.use(verifyToken);
 router.get("/get-all", favoriteController.getALlLikePost);
 router.post("/likePost", favoriteController.LikePost);
 router.post("/unlikePost", favoriteController.UnlikePost);
+router.get("/getLikeMany", favoriteController.getMostLikedPost);
 export default router;

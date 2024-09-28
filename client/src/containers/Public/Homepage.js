@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { text } from "../../ultils/constant";
-import { Province, ItemSidebar, RelatedPost } from "../../components";
+import {
+  Province,
+  ItemSidebar,
+  RelatedPost,
+  CountLikePost,
+} from "../../components";
 import { List, Pagination } from "./index";
 import { useSearchParams } from "react-router-dom";
 import { getPosts } from "../../services/post";
@@ -33,6 +38,7 @@ const Homepage = () => {
         areaMin,
         categoryCode,
         provinceCode,
+        status: "approved",
       });
       setPostsData(data.data.response);
     };
@@ -65,7 +71,11 @@ const Homepage = () => {
           <div className=""></div>
         </div>
         <div className="flex gap-4 justify-start items-center flex-col w-[30%] ">
-          <ItemSidebar content={categories} title="Danh sách cho thuê" />
+          <ItemSidebar
+            content={categories}
+            title="Danh sách cho thuê"
+            searchParamKey="categoryCode"
+          />
           <ItemSidebar
             isDouble={true}
             content={prices}
@@ -79,6 +89,7 @@ const Homepage = () => {
             searchParamKey="areaCode"
           />
           <RelatedPost />
+          <CountLikePost />
         </div>
       </div>
     </div>

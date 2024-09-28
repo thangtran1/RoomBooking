@@ -1,12 +1,12 @@
-import React, { memo, useEffect, useState } from "react";
-import icons from "../ultils/icons";
+import React, { memo } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { path } from "../ultils/constant";
+import instance from "../axiosConfig";
 import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
-import axios from "axios"; // Import Axios
+import { path } from "../ultils/constant";
+import icons from "../ultils/icons";
 
-const { RiStarSLine, RiHeartFill, RiHeartLine, TfiStar, RiBookmark3Fill } =
-  icons;
+const { RiHeartFill, RiHeartLine, TfiStar, RiBookmark3Fill } = icons;
 
 const Item = ({
   images,
@@ -17,73 +17,26 @@ const Item = ({
   address,
   star,
   id,
+  isLiked,
+  getPostsLiked,
 }) => {
-  const [isHoverHeart, setIsHoverHeart] = useState(false);
-  const [isHeartClicked, setIsHeartClicked] = useState(false);
-
-  useEffect(() => {
-    const favoriteStatus = localStorage.getItem(`favorite-${id}`);
-    if (favoriteStatus === "true") {
-      setIsHeartClicked(true);
-    }
-  }, [id]);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   const handleHeartClick = async (e) => {
     e.stopPropagation();
     e.preventDefault();
-
-    const newHeartClicked = !isHeartClicked;
-    setIsHeartClicked(newHeartClicked);
-
-    localStorage.setItem(`favorite-${id}`, newHeartClicked);
-
-    const tokenString = localStorage.getItem("persist:auth");
-    let token;
-
-    if (tokenString) {
-      try {
-        const parsedAuth = JSON.parse(tokenString);
-        token = parsedAuth?.token?.replace(/\"/g, "");
-      } catch (error) {
-        console.error("Error parsing token:", error);
-      }
+    if (isLiked) {
+      await instance.post("/api/v1/favorite/unlikePost", {
+        userId: user?.id,
+        postId: id,
+      });
+    } else {
+      await instance.post("/api/v1/favorite/likePost", {
+        userId: user?.id,
+        postId: id,
+      });
     }
-
-    console.log("🚀 ~ handleHeartClick ~ token:", token);
-
-    try {
-      if (newHeartClicked) {
-        const response = await axios.post(
-          `http://localhost:5000/api/v1/favorite/likePost`,
-          {
-            userId: user?.id,
-            postId: id,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Post liked:", response);
-      } else {
-        const response = await axios.post(
-          `http://localhost:5000/api/v1/favorite/unlikePost`,
-          {
-            userId: user?.id,
-            postId: id,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Post unliked:", response.data);
-      }
-    } catch (error) {
-      console.error("Error handling favorite:", error);
-    }
+    await getPostsLiked();
   };
   const handleStar = (star) => {
     const stars = [];
@@ -99,7 +52,10 @@ const Item = ({
   return (
     <div className="w-full flex border-t border-orange-600 py-4 ">
       <Link
-        to={`${path.DETAIL}${formatVietnameseToString(
+        // to={`${path.DETAIL}${formatVietnameseToString(
+        //   title?.replaceAll("/", "")
+        // )}/${id}`}
+        to={`/chi-tiet/${formatVietnameseToString(
           title?.replaceAll("/", "")
         )}/${id}`}
         className="w-2/5 flex flex-wrap gap-[2px] items-center relative cursor-pointer"
@@ -119,15 +75,21 @@ const Item = ({
         <span className="text-white bg-overlay-70 px-2 rounded-md absolute left-1 bottom-1">{`${images.length} ảnh`}</span>
 
         <span
-          onMouseEnter={() => setIsHoverHeart(true)}
-          onMouseLeave={() => setIsHoverHeart(false)}
-          onClick={handleHeartClick} // Gọi hàm khi nhấp vào trái tim
-          className="text-white absolute right-7 bottom-1 cursor-pointer"
+          onClick={handleHeartClick}
+          className="text-white absolute right-7 bottom-1 cursor-pointer group size-[25px]"
         >
-          {isHeartClicked || isHoverHeart ? (
-            <RiHeartFill color="red" size={25} />
-          ) : (
-            <RiHeartLine size={25} />
+          {isLoggedIn && (
+            <RiHeartFill
+              color="red"
+              size={25}
+              className={`${isLiked ? "block" : "hidden"} group-hover:block`}
+            />
+          )}
+          {isLoggedIn && (
+            <RiHeartLine
+              size={25}
+              className={`${!isLiked ? "block" : "hidden"} group-hover:hidden`}
+            />
           )}
         </span>
       </Link>
@@ -176,20 +138,31 @@ const Item = ({
             <p>{user?.name}</p>
           </div>
           <div className="flex items-center gap-1">
-            <a
-              // href={`tel:${user?.phone}`}
-              // target="_blank"
-              className="bg-blue-700 text-white p-1 rounded-md"
-            >
-              {`Gọi ${user?.phone}`}
-            </a>
-            <a
-              href={`https://zalo.me/${user?.zalo}`}
-              target="_blank"
-              className="text-blue-700 px-1 rounded-md border border-blue-700"
-            >
-              Nhấn zalo
-            </a>
+            {user?.phone ? (
+              <a
+                rel="noreferrer"
+                href={`tel:${user.phone}`}
+                className="bg-blue-700 text-white p-1 rounded-md"
+              >
+                {`Gọi ${user.phone}`}
+              </a>
+            ) : (
+              <span className="text-gray-500">
+                Số điện thoại không khả dụng
+              </span>
+            )}
+            {user?.zalo ? (
+              <a
+                rel="noreferrer"
+                href={`https://zalo.me/${user.zalo}`}
+                target="_blank"
+                className="text-blue-700 px-1 rounded-md border border-blue-700"
+              >
+                Nhấn zalo
+              </a>
+            ) : (
+              <span className="text-gray-500">Zalo không khả dụng</span>
+            )}
           </div>
         </div>
       </div>

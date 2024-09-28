@@ -46,11 +46,7 @@ export const updateUserUD = async (req, res) => {
       avatar: avatar || user.avatar,
     };
 
-    if (avatar) {
-      updatedData.avatar = avatar;
-    }
-
-    await user.update(updatedData);
+    await user.update({ ...user, ...updatedData });
 
     return res
       .status(200)
@@ -142,6 +138,83 @@ export const deleteUser = async (req, res) => {
     return res.status(500).json({
       err: -1,
       msg: `Failed at user controller: ${e.message}`,
+    });
+  }
+};
+
+export const updatePhone = async (req, res) => {
+  const user = req.user;
+  const userId = user?.id;
+  console.log(user);
+  console.log("...", userId);
+
+  if (!userId) {
+    return res.status(400).json({
+      err: 1,
+      msg: "User ID not found in token",
+    });
+  }
+
+  const { phone } = req.body;
+  console.log("req.body", req.body);
+
+  try {
+    const response = await service.updateUser(userId, { phone });
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at user controller: " + e,
+      e,
+    });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  const user = req.user;
+  const userId = user?.id;
+
+  if (!userId) {
+    return res.status(400).json({
+      err: 1,
+      msg: "User ID not found in token",
+    });
+  }
+
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    const userFromDb = await db.User.findOne({ where: { id: userId } });
+
+    if (!userFromDb) {
+      return res.status(404).json({
+        err: 1,
+        msg: "User not found",
+      });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(
+      oldPassword,
+      userFromDb.password
+    );
+    if (!isPasswordMatch) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Old password is incorrect",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const response = await service.updateUser(userId, {
+      password: hashedPassword,
+    });
+
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at user controller: " + e,
+      e,
     });
   }
 };
