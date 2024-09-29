@@ -28,14 +28,16 @@ const Login = () => {
   }, [msg, update]);
 
   const onFinish = (values) => {
-    const finalPayload = isRegister
-      ? values
-      : {
-          phone: values.phone,
-          password: values.password,
-        };
+    const finalPayload = {
+      phone: values.phone,
+      email: values.email,
+      password: values.password,
+    };
 
     if (isRegister) {
+      // Thêm trường name vào finalPayload nếu đang đăng ký
+      finalPayload.name = values.name;
+
       dispatch(actions.register(finalPayload)).then((res) => {
         if (res.success) {
           Swal.fire("Thành công!", "Đăng ký tài khoản thành công!", "success");
@@ -56,12 +58,6 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/");
-    }
-  }, [isLoggedIn, navigate]);
-
   const validateField = (rule, value) => {
     if (!value || value.trim() === "") {
       return Promise.reject(new Error("Trường này không được để trống"));
@@ -71,6 +67,14 @@ const Login = () => {
       return Promise.reject(new Error("Không được chứa khoảng trắng"));
     }
 
+    return Promise.resolve();
+  };
+
+  const validateEmail = (rule, value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value || !emailRegex.test(value)) {
+      return Promise.reject(new Error("Email không hợp lệ"));
+    }
     return Promise.resolve();
   };
 
@@ -107,6 +111,14 @@ const Login = () => {
               <Input />
             </Form.Item>
           )}
+
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ validator: validateEmail }]}
+          >
+            <Input autoComplete="username" />
+          </Form.Item>
 
           <Form.Item
             name="phone"

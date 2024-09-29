@@ -10,12 +10,13 @@ import { List, Pagination } from "./index";
 import { useSearchParams } from "react-router-dom";
 import { getPosts } from "../../services/post";
 import { useSelector } from "react-redux";
-
 const limit = 5;
 const Homepage = () => {
   const { categories, prices, areas } = useSelector((state) => state.app);
   const [postsData, setPostsData] = useState({ count: 0, rows: [] });
   const [page, setPage] = useState(1);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
   const [searchParams] = useSearchParams();
 
   const priceMin = searchParams.get("priceMin");
@@ -89,7 +90,13 @@ const Homepage = () => {
             searchParamKey="areaCode"
           />
           <RelatedPost />
-          <CountLikePost />
+          {isLoggedIn ? (
+            <CountLikePost />
+          ) : (
+            <p className="w-full bg-white rounded-md p-4">
+              Đăng nhập hoặc đăng ký để xem các bài được yêu thích nhiều nhất.
+            </p>
+          )}
         </div>
       </div>
     </div>

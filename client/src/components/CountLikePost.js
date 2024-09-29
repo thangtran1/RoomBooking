@@ -9,8 +9,6 @@ const CountLikePost = () => {
     const fetchLikedPosts = async () => {
       try {
         const response = await instance.get("/api/v1/favorite/getLikeMany");
-        console.log("🚀 ~ fetchLikedPosts ~ response:", response);
-
         if (response.data && response.data.response) {
           setLikedPosts(response.data.response.slice(0, 5));
         }

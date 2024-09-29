@@ -6,6 +6,7 @@ import { Item } from "../../components";
 import { getPostsLimit } from "../../store/actions/post";
 
 const List = ({ categoryCode, posts }) => {
+  console.log("🚀 ~ List ~ posts:", posts);
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const [sort, setSort] = useState(0);
@@ -42,6 +43,16 @@ const List = ({ categoryCode, posts }) => {
     dispatch(getPostsLimit(searchParamsObject));
   }, [searchParams, categoryCode, sort, dispatch]);
 
+  // Sắp xếp posts dựa trên trường createdAt
+  const sortedPosts =
+    posts
+      ?.filter((item) => item?.status === "approved")
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return sort === 1 ? dateB - dateA : dateA - dateB; // Sắp xếp mới nhất hoặc mặc định
+      }) || [];
+
   return (
     <div className="w-full p-2 bg-white shadow-md rounded-md px-5">
       <div className="flex items-center justify-between my-3">
@@ -68,26 +79,24 @@ const List = ({ categoryCode, posts }) => {
         </span>
       </div>
       <div className="items">
-        {posts?.length > 0 &&
-          posts
-            .filter((item) => item?.status === "approved")
-            .map((item) => {
-              return (
-                <Item
-                  key={item?.id}
-                  address={item?.address}
-                  attributes={item?.attributes}
-                  description={JSON.parse(item?.description)}
-                  images={JSON.parse(item?.images?.image)}
-                  star={+item?.star}
-                  title={item?.title}
-                  user={item?.user}
-                  id={item?.id}
-                  isLiked={favouritePostIds.includes(item.id)}
-                  getPostsLiked={getPostsLiked}
-                />
-              );
-            })}
+        {sortedPosts.length > 0 &&
+          sortedPosts.map((item) => {
+            return (
+              <Item
+                key={item?.id}
+                address={item?.address}
+                attributes={item?.attributes}
+                description={JSON.parse(item?.description)}
+                images={JSON.parse(item?.images?.image)}
+                star={+item?.star}
+                title={item?.title}
+                user={item?.user}
+                id={item?.id}
+                isLiked={favouritePostIds.includes(item.id)}
+                getPostsLiked={getPostsLiked}
+              />
+            );
+          })}
       </div>
     </div>
   );

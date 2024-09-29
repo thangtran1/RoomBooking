@@ -8,6 +8,7 @@ import {
   apiUpdatePassword,
   apiUpdatePhone,
   apiUpdateUser,
+  apiUpdateEmail,
 } from "../../services";
 import { FaTrash } from "react-icons/fa";
 import { getCurrent } from "../../store/actions";
@@ -24,12 +25,14 @@ const EditAccount = () => {
   });
   const [newPhone, setNewPhone] = useState("");
   const [oldPhone, setOldPhone] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [oldEmail, setOldEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [isPhoneModalVisible, setIsPhoneModalVisible] = useState(false);
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
-  const [isAvatarSelected, setIsAvatarSelected] = useState(false); // Trạng thái theo dõi ảnh đại diện
-
+  const [isAvatarSelected, setIsAvatarSelected] = useState(false);
   useEffect(() => {
     if (currentData) {
       setUserInfo({
@@ -40,7 +43,9 @@ const EditAccount = () => {
       });
       setNewPhone(currentData.phone || "");
       setOldPhone(currentData.phone || "");
-      setIsAvatarSelected(!!currentData.avatar); // Đặt trạng thái theo dõi ảnh đại diện
+      setNewEmail(currentData.email || "");
+      setOldEmail(currentData.email || "");
+      setIsAvatarSelected(!!currentData.avatar);
     }
   }, [currentData]);
 
@@ -82,7 +87,6 @@ const EditAccount = () => {
   const handleUpdatePhone = async () => {
     try {
       const response = await apiUpdatePhone({ phone: newPhone });
-      console.log("Response from server:", response);
 
       if (response?.data.msg === "User updated successfully!") {
         Swal.fire("Done", "Cập nhật số điện thoại thành công", "success").then(
@@ -102,7 +106,7 @@ const EditAccount = () => {
       console.error("Error updating phone:", error);
       Swal.fire(
         "Error",
-        "Có lỗi xảy ra trong quá trình cập nhật số điện thoại!",
+        "Số điện thoại đã tồn tại hoặc định dạng không đúng!",
         "error"
       );
     }
@@ -150,13 +154,39 @@ const EditAccount = () => {
       );
     }
   };
+
+  const handleUpdateEmail = async () => {
+    try {
+      const response = await apiUpdateEmail({ email: newEmail });
+
+      if (response?.data.msg === "User updated successfully!") {
+        Swal.fire("Done", "Cập nhật Email thành công", "success").then(() => {
+          dispatch(getCurrent());
+        });
+        setIsEmailModalVisible(false);
+      } else {
+        Swal.fire(
+          "Oops!",
+          response?.data?.msg || "Cập nhật Email không thành công",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating Email:", error);
+      Swal.fire(
+        "Error",
+        "Có lỗi xảy ra trong quá trình cập nhật Email!",
+        "error"
+      );
+    }
+  };
   const handleUploadFile = async (e) => {
     const imageBase64 = await fileToBase64(e.target.files[0]);
     setUserInfo((prev) => ({
       ...prev,
       avatar: imageBase64,
     }));
-    setIsAvatarSelected(true); // Đặt trạng thái ảnh đã được chọn
+    setIsAvatarSelected(true);
   };
 
   const handleRemoveAvatar = () => {
@@ -164,7 +194,7 @@ const EditAccount = () => {
       ...prev,
       avatar: "",
     }));
-    setIsAvatarSelected(false); // Đặt lại trạng thái khi xóa ảnh
+    setIsAvatarSelected(false);
   };
 
   return (
@@ -195,6 +225,23 @@ const EditAccount = () => {
               }}
             >
               Đổi số điện thoại
+            </p>
+          </div>
+
+          <div>
+            <InputReadOnly
+              direction="flex-row"
+              label="Email"
+              value={currentData?.email || ""}
+            />
+            <p
+              className="text-blue-600 cursor-pointer hover:underline ml-48"
+              onClick={() => {
+                setNewEmail("");
+                setIsEmailModalVisible(true);
+              }}
+            >
+              Đổi Email
             </p>
           </div>
 
@@ -295,6 +342,30 @@ const EditAccount = () => {
             type="number"
             direction="flex-row"
             value={newPhone}
+          />
+        </div>
+      </Modal>
+
+      {/* Modal cập nhật email */}
+      <Modal
+        title="Cập nhật Email"
+        open={isEmailModalVisible}
+        onCancel={() => setIsEmailModalVisible(false)}
+        onOk={handleUpdateEmail}
+      >
+        <div className="flex flex-col gap-2 mt-5">
+          <InputReadOnly
+            direction="flex-row"
+            label="Email cũ"
+            value={oldEmail}
+          />
+          <InputFormV2
+            onChange={(e) => setNewEmail(e.target.value)}
+            name="newEmail"
+            label="Email mới"
+            type="email"
+            direction="flex-row"
+            value={newEmail}
           />
         </div>
       </Modal>

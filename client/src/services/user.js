@@ -33,3 +33,7 @@ export const apiUpdatePhone = (data) => {
 export const apiUpdatePassword = (data) => {
   return axios.put("/api/v1/user/update-password", data);
 };
+
+export const apiUpdateEmail = (data) => {
+  return axios.put("/api/v1/user/update-email", data);
+};

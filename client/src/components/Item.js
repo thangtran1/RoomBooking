@@ -52,9 +52,6 @@ const Item = ({
   return (
     <div className="w-full flex border-t border-orange-600 py-4 ">
       <Link
-        // to={`${path.DETAIL}${formatVietnameseToString(
-        //   title?.replaceAll("/", "")
-        // )}/${id}`}
         to={`/chi-tiet/${formatVietnameseToString(
           title?.replaceAll("/", "")
         )}/${id}`}
@@ -62,7 +59,7 @@ const Item = ({
       >
         {images.length > 0 &&
           images
-            .filter((_, index) => index < 4) // Limit to first 4 images
+            .filter((_, index) => index < 4)
             .map((img, index) => (
               <img
                 key={index}

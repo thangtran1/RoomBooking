@@ -13,5 +13,6 @@ router.use(verifyToken);
 router.get("/get-current", userController.getCurrent);
 router.put("/update-phone", userController.updatePhone);
 router.put("/update-password", userController.updatePassword);
+router.put("/update-email", userController.updateEmail);
 
 export default router;

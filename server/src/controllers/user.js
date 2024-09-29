@@ -1,6 +1,7 @@
 import * as service from "../services/user";
 import db from "../models";
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 export const getCurrent = async (req, res) => {
   const user = req.user;
   const userId = user?.id;
@@ -31,7 +32,7 @@ export const updateUserUD = async (req, res) => {
     const { name, zalo, fbUrl, avatar } = req.body;
 
     if (!id || (!name && !zalo && !fbUrl && !avatar)) {
-      return res.status(400).json({ msg: "Missing required fields!" });
+      return res.status(400).json({ msg: "Missing required fields1!" });
     }
 
     const user = await db.User.findOne({ where: { id } });
@@ -61,7 +62,7 @@ export const createUser = async (req, res) => {
   try {
     const { name, phone, password, zalo, fbUrl } = req.body;
     if (!name || !phone || !password || !zalo) {
-      return res.status(400).json({ msg: "Missing required fields!" });
+      return res.status(400).json({ msg: "Missing required fields2!" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -88,7 +89,7 @@ export const updateUser = async (req, res) => {
     const { name, phone, password, zalo, fbUrl } = req.body;
 
     if (!name || !phone || !zalo) {
-      return res.status(400).json({ msg: "Missing required fields!" });
+      return res.status(400).json({ msg: "Missing required fields3!" });
     }
 
     const user = await db.User.findByPk(id);
@@ -145,8 +146,11 @@ export const deleteUser = async (req, res) => {
 export const updatePhone = async (req, res) => {
   const user = req.user;
   const userId = user?.id;
-  console.log(user);
-  console.log("...", userId);
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
+    return phoneRegex.test(phone);
+  };
 
   if (!userId) {
     return res.status(400).json({
@@ -156,9 +160,25 @@ export const updatePhone = async (req, res) => {
   }
 
   const { phone } = req.body;
-  console.log("req.body", req.body);
+  if (!validatePhone(phone)) {
+    return res.status(400).json({
+      err: 1,
+      msg: "Số điện thoại không hợp lệ!",
+    });
+  }
 
   try {
+    const existingUser = await db.User.findOne({
+      where: { phone, id: { [Op.ne]: userId } },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Số điện thoại đã được sử dụng bởi người dùng khác!",
+      });
+    }
+
     const response = await service.updateUser(userId, { phone });
     return res.status(200).json(response);
   } catch (e) {
@@ -209,6 +229,36 @@ export const updatePassword = async (req, res) => {
       password: hashedPassword,
     });
 
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at user controller: " + e,
+      e,
+    });
+  }
+};
+
+export const updateEmail = async (req, res) => {
+  const user = req.user;
+  const userId = user?.id;
+
+  if (!userId) {
+    return res.status(400).json({
+      err: 1,
+      msg: "User ID not found in token",
+    });
+  }
+
+  const { email } = req.body;
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    return res.status(400).json({
+      err: 1,
+      msg: "Invalid email format",
+    });
+  }
+  try {
+    const response = await service.updateUser(userId, { email });
     return res.status(200).json(response);
   } catch (e) {
     return res.status(500).json({

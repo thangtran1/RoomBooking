@@ -85,7 +85,6 @@ export const getPostsLimitService = (
             attributes: { exclude: ["createdAt", "updatedAt"] },
           },
         ],
-        attributes: ["id", "title", "star", "address", "description", "status"],
       });
 
       resolve({
@@ -185,16 +184,6 @@ export const getAllPosts = async (query) => {
           attributes: ["price", "acreage", "published", "hashtag"],
         },
         { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
-      ],
-      attributes: [
-        "id",
-        "title",
-        "star",
-        "address",
-        "description",
-        "priceNumber",
-        "areaNumber",
-        "status",
       ],
     });
 

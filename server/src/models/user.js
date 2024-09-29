@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       password: DataTypes.STRING,
       phone: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        unique: true, // Đảm bảo email là duy nhất
+      },
       zalo: DataTypes.STRING,
       fbUrl: DataTypes.STRING,
       avatar: DataTypes.STRING,

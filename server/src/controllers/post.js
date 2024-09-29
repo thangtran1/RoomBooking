@@ -28,7 +28,6 @@ export const getPostsLimit = async (req, res) => {
   } = req.query;
 
   try {
-    // Chuyển đổi các tham số priceMin và priceMax thành mảng số
     const priceNumber =
       priceMin.length && priceMax.length
         ? [Number(priceMin), Number(priceMax)]
@@ -87,14 +86,13 @@ export const getAllPosts = async (req, res) => {
 export const createNewPost = async (req, res) => {
   try {
     const { categoryCode, title, priceNumber, areaNumber, label } = req.body;
-    const { id, role } = req.user; // Lấy role của người dùng từ req.user
+    const { id, role } = req.user;
     if (!categoryCode || !title || !id || !priceNumber || !areaNumber || !label)
       return res.status(400).json({
         err: 1,
         msg: "Missing inputs",
       });
 
-    // Gọi service với userId và userRole
     const response = await postService.createNewPostsService(
       req.body,
       id,

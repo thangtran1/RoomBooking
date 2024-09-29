@@ -88,6 +88,31 @@ color: yellow !important;
     top: 45% !important;
 
 }
+
+.custom-modal .ant-modal-content {
+    background-color: #28a745; 
+    color: white; 
+}
+.custom-modal .ant-modal-content {
+    background-color: #28a745; 
+    color: white; 
+}
+.custom-modal .ant-modal-close {
+    color: black;
+    border-radius: 50%;
+    background-color: white; 
+}
+.custom-modal .ant-modal-close:hover {
+    background-color: rgb(221, 213, 213); 
+  }
+
+  .ant-modal.custom-modal {
+    top: 170px !important; /* Vị trí từ trên cùng */
+    margin-right:95px !important;
+  }
+  
+
+
 @keyframes slide-right {
     0% {
         -webkit-transform: translateX(0);

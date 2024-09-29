@@ -4,48 +4,72 @@ import jwt from "jsonwebtoken";
 import { where } from "sequelize";
 import { v4 } from "uuid";
 require("dotenv").config();
+const { Op } = require("sequelize");
 
 const hashPassword = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(12));
-export const registerService = ({ phone, password, name, role = "user" }) =>
+export const registerService = ({
+  phone,
+  email,
+  password,
+  name,
+  zalo,
+  fbUrl,
+  role = "user",
+}) =>
   new Promise(async (resolve, reject) => {
     try {
-      const response = await db.User.findOrCreate({
+      const existingUser = await db.User.findOne({
         where: {
-          phone,
-        },
-        defaults: {
-          phone,
-          name,
-          password: hashPassword(password),
-          id: v4(),
+          [Op.or]: [{ phone }, { email }],
         },
       });
-      const token =
-        response[1] &&
-        jwt.sign(
-          { id: response[0].id, phone: response[0].phone },
-          process.env.SECRET_KEY,
-          { expiresIn: "2d" }
-        );
+
+      if (existingUser) {
+        return resolve({
+          err: 1,
+          msg: "Phone number or email has been already used!",
+          token: null,
+        });
+      }
+
+      const newUser = await db.User.create({
+        phone,
+        email,
+        name,
+        zalo,
+        fbUrl,
+        password: hashPassword(password),
+        id: v4(),
+      });
+
+      const token = jwt.sign(
+        {
+          id: newUser.id,
+          phone: newUser.phone,
+          email: newUser.email,
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: "2d" }
+      );
 
       resolve({
-        err: token ? 0 : 2,
-        msg: token
-          ? "Register is successFully ! "
-          : "Phone number has been aldready used!",
-        token: token || null,
+        err: 0,
+        msg: "Register is successful!",
+        token,
       });
     } catch (e) {
       reject(e);
     }
   });
 
-export const loginService = ({ phone, password }) =>
+export const loginService = ({ phone, email, password }) =>
   new Promise(async (resolve, reject) => {
     try {
       const respone = await db.User.findOne({
-        where: { phone },
+        where: {
+          [Op.or]: [{ phone }, { email }], // Tìm user bằng phone hoặc email
+        },
         raw: true,
       });
       const isCorrectPassword =
@@ -54,7 +78,12 @@ export const loginService = ({ phone, password }) =>
       const token =
         isCorrectPassword &&
         jwt.sign(
-          { id: respone.id, phone: respone.phone, role: respone.role },
+          {
+            id: respone.id,
+            phone: respone.phone,
+            email: respone.email,
+            role: respone.role,
+          },
           process.env.SECRET_KEY,
           { expiresIn: "2d" }
         );
@@ -65,7 +94,7 @@ export const loginService = ({ phone, password }) =>
           ? "Login is successful!"
           : respone
           ? "Password is wrong ..."
-          : "Phone number not found!",
+          : "Phone number or email not found!",
         token: token || null,
       });
     } catch (e) {
