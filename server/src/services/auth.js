@@ -63,12 +63,12 @@ export const registerService = ({
     }
   });
 
-export const loginService = ({ phone, email, password }) =>
+export const loginService = ({ identifier, password }) =>
   new Promise(async (resolve, reject) => {
     try {
       const respone = await db.User.findOne({
         where: {
-          [Op.or]: [{ phone }, { email }], // Tìm user bằng phone hoặc email
+          [Op.or]: [{ phone: identifier }, { email: identifier }],
         },
         raw: true,
       });

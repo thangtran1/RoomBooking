@@ -108,23 +108,24 @@ const ManageContact = () => {
   ];
 
   return (
-    <div>
-      <h2 className="flex items-center justify-center font-semibold uppercase mb-2 ">
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h2 className="flex items-center justify-center font-semibold uppercase text-gray-700 mb-6 text-lg">
         Quản lý phản hồi từ khách hàng
       </h2>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <Input
           placeholder="Tìm kiếm theo tên, điện thoại hoặc nội dung"
           value={searchText}
           prefix={<SearchOutlined />}
           onChange={handleSearch}
-          style={{ marginBottom: 16, width: 300 }}
+          className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-500"
+          style={{ width: 300 }}
         />
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
-          style={{ marginBottom: 16 }}
+          className="ml-2 bg-indigo-500 text-white hover:bg-indigo-600 focus:ring focus:ring-indigo-200"
         >
           Tạo Contact
         </Button>
@@ -134,6 +135,7 @@ const ManageContact = () => {
         pagination={5}
         columns={columns}
         rowKey="id"
+        className="w-full"
       />
 
       <Modal
@@ -152,7 +154,7 @@ const ManageContact = () => {
             label="Name"
             rules={[{ required: true, message: "Please input the name!" }]}
           >
-            <Input />
+            <Input className="border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500" />
           </Form.Item>
           <Form.Item
             name="phone"
@@ -161,17 +163,21 @@ const ManageContact = () => {
               { required: true, message: "Please input the phone number!" },
             ]}
           >
-            <Input />
+            <Input className="border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500" />
           </Form.Item>
           <Form.Item
             name="content"
             label="Content"
             rules={[{ required: true, message: "Please input the content!" }]}
           >
-            <Input.TextArea />
+            <Input.TextArea className="border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-indigo-200 focus:border-indigo-500" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="bg-indigo-500 text-white hover:bg-indigo-600"
+            >
               Submit
             </Button>
           </Form.Item>

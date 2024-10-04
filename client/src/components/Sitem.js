@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import "moment/locale/vi";
 import { TfiStar } from "react-icons/tfi";
+
 const Sitem = ({
   title,
   price,
@@ -15,6 +16,7 @@ const Sitem = ({
     moment.locale("vn");
     return moment(createdAt).fromNow();
   };
+
   const handleStar = (star) => {
     const stars = [];
     const numberOfStars = Number(star);
@@ -25,14 +27,19 @@ const Sitem = ({
     }
     return stars;
   };
+
   return (
-    <div className="w-full flex items-center gap-2  border-b border-gray-400 py-2">
-      <img
-        className="w-[65px] h-[65px] object-cover rounded-md flex-none "
-        src={image[0]}
-        alt="ảnh sitem"
-      />
-      <div className=" w-full flex-auto flex flex-col justify-between gap-1 ">
+    <div className="w-full flex items-center gap-2 border-b border-gray-400 py-2">
+      {image && image.length > 0 ? (
+        <img
+          className="w-[65px] h-[65px] object-cover rounded-md flex-none"
+          src={image[0]}
+          alt="ảnh sitem"
+        />
+      ) : (
+        <div className="w-[65px] h-[65px] bg-gray-300 rounded-md flex-none" />
+      )}
+      <div className="w-full flex-auto flex flex-col justify-between gap-1">
         {isCountLikePost && (
           <span className="text-sm font-medium text-green-500">{`Lượt Like: ${likeCount} `}</span>
         )}
@@ -41,7 +48,6 @@ const Sitem = ({
             handleStar(+star).map((star, number) => {
               return <span key={number}>{star}</span>;
             })}
-
           {`${title?.slice(0, 30)}...`}
         </h4>
         <div className="flex items-center justify-between w-full">

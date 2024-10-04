@@ -20,9 +20,9 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { phone, email, password } = req.body;
+  const { identifier, password } = req.body;
   try {
-    if ((!phone && !email) || !password)
+    if (!identifier || !password)
       return res.status(400).json({
         err: 1,
         msg: "Missing Inputs!",

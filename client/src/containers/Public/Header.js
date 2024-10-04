@@ -33,7 +33,7 @@ const Header = () => {
 
   const filteredMenuManage = menuManage.filter((item) => {
     if (isAdmin) {
-      return item.text !== "Quản lý tin đăng";
+      return item.text !== "";
     }
     return true;
   });
@@ -91,7 +91,7 @@ const Header = () => {
                   {isAdmin && (
                     <Link
                       className="flex items-center gap-2 hover:text-orange-500 text-blue-600 border-b border-gray-200 py-2"
-                      to="/he-thong/quan-ly-user"
+                      to="/he-thong/quan-ly-admin"
                     >
                       <MdManageAccounts />
                       Quản lý Admin

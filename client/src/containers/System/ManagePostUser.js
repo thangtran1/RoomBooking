@@ -163,7 +163,6 @@ const ManagePostUser = () => {
       );
       message.success(response.data.msg);
 
-      // Cập nhật trạng thái bài đăng
       setFilteredData((prevData) =>
         prevData.map((post) =>
           post.id === id ? { ...post, status: "approved" } : post

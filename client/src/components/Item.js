@@ -5,7 +5,7 @@ import instance from "../axiosConfig";
 import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
 import { path } from "../ultils/constant";
 import icons from "../ultils/icons";
-
+import logos from "../assets/index";
 const { RiHeartFill, RiHeartLine, TfiStar, RiBookmark3Fill } = icons;
 
 const Item = ({
@@ -48,6 +48,7 @@ const Item = ({
     }
     return stars;
   };
+  const defaultAvatar = logos.image_noon;
 
   return (
     <div className="w-full flex border-t border-orange-600 py-4 ">
@@ -57,17 +58,19 @@ const Item = ({
         )}/${id}`}
         className="w-2/5 flex flex-wrap gap-[2px] items-center relative cursor-pointer"
       >
-        {images.length > 0 &&
-          images
-            .filter((_, index) => index < 4)
-            .map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt="preview"
-                className="w-[47%] h-[120px] object-cover"
-              />
-            ))}
+        {[
+          ...images,
+          ...Array(Math.max(0, 4 - images.length)).fill(defaultAvatar),
+        ]
+          .slice(0, 4)
+          .map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              alt="preview"
+              className="w-[47%] h-[120px] object-cover border border-blue-300 rounded-md"
+            />
+          ))}
 
         <span className="text-white bg-overlay-70 px-2 rounded-md absolute left-1 bottom-1">{`${images.length} ảnh`}</span>
 
@@ -158,7 +161,7 @@ const Item = ({
                 Nhấn zalo
               </a>
             ) : (
-              <span className="text-gray-500">Zalo không khả dụng</span>
+              <span className="text-gray-500">Zalo không tồn tại</span>
             )}
           </div>
         </div>
@@ -166,5 +169,4 @@ const Item = ({
     </div>
   );
 };
-
 export default memo(Item);

@@ -21,6 +21,7 @@ import {
   ManageCategory,
   ManagePostUser,
   ManageContact,
+  ManageAdmin,
 } from "./containers/System";
 import * as actions from "./store/actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,6 +71,8 @@ function App() {
           <Route path={path.CREATE_POST} element={<CreatePost />} />
           <Route path={path.MANAGE_POST} element={<ManagePost />} />
           <Route path={path.EDIT_ACCOUNT} element={<EditAccount />} />
+          <Route path={path.MANAGE_ADMIN} element={<ManageAdmin />} />
+
           <Route path={path.MANAGE_USER} element={<ManageUser />} />
           <Route path={path.MANAGE_CATEGORY} element={<ManageCategory />} />
           <Route path={path.MANAGE_POST_USER} element={<ManagePostUser />} />

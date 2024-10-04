@@ -294,11 +294,7 @@ export const createNewPostsService = (body, userId, userRole) =>
     }
   });
 
-export const getPostsLimitAdminService = (
-  page,
-  query,
-  id // lấy all bài đăng in admin
-) =>
+export const getPostsLimitAdminService = (page, query, id) =>
   new Promise(async (resolve, reject) => {
     try {
       let offset = !page || +page <= 1 ? 0 : +page - 1;
@@ -309,8 +305,6 @@ export const getPostsLimitAdminService = (
         nest: true,
         offset: offset * +process.env.LIMIT,
         limit: +process.env.LIMIT,
-        // offset: limit * (page - 1),
-        // limit: limit,
         order: [["createdAt", "DESC"]],
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },

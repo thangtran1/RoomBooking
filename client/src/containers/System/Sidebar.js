@@ -26,7 +26,7 @@ const Sidebar = () => {
 
   const filteredMenuSidebar = menuSidebar.filter((item) => {
     if (isAdmin) {
-      return !["Quản lý tin đăng", "Liên hệ"].includes(item.text);
+      return !["Liên hệ"].includes(item.text);
     }
     return true;
   });
@@ -67,9 +67,16 @@ const Sidebar = () => {
         ))}
         {isAdmin && (
           <>
-            <div className={notActiveStyle} onClick={toggleSubmenu}>
-              <MdManageAccounts />
-              Quản lý tài khoản người dùng
+            <div onClick={toggleSubmenu}>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? activeStyle : notActiveStyle
+                }
+                to="/he-thong/quan-ly-admin"
+              >
+                <MdManageAccounts />
+                Quản lý Admin
+              </NavLink>
             </div>
             {isSubmenuOpen && (
               <div className="ml-6 flex flex-col gap-2">

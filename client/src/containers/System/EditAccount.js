@@ -217,7 +217,7 @@ const EditAccount = () => {
               label="Số điện thoại"
               value={currentData?.phone || ""}
             />
-            <p
+            <small
               className="text-blue-600 cursor-pointer hover:underline ml-48"
               onClick={() => {
                 setNewPhone("");
@@ -225,7 +225,7 @@ const EditAccount = () => {
               }}
             >
               Đổi số điện thoại
-            </p>
+            </small>
           </div>
 
           <div>
@@ -234,7 +234,7 @@ const EditAccount = () => {
               label="Email"
               value={currentData?.email || ""}
             />
-            <p
+            <small
               className="text-blue-600 cursor-pointer hover:underline ml-48"
               onClick={() => {
                 setNewEmail("");
@@ -242,7 +242,7 @@ const EditAccount = () => {
               }}
             >
               Đổi Email
-            </p>
+            </small>
           </div>
 
           <InputFormV2
@@ -322,7 +322,6 @@ const EditAccount = () => {
         </div>
       </div>
 
-      {/* Modal cập nhật số điện thoại */}
       <Modal
         title="Cập nhật số điện thoại"
         open={isPhoneModalVisible}
@@ -346,7 +345,6 @@ const EditAccount = () => {
         </div>
       </Modal>
 
-      {/* Modal cập nhật email */}
       <Modal
         title="Cập nhật Email"
         open={isEmailModalVisible}
@@ -370,7 +368,6 @@ const EditAccount = () => {
         </div>
       </Modal>
 
-      {/* Modal cập nhật mật khẩu */}
       <Modal
         title="Cập nhật mật khẩu"
         open={isPasswordModalVisible}

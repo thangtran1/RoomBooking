@@ -15,6 +15,7 @@ export const path = {
   CONTACT: "lien-he",
   DETAIL: "chi-tiet/",
   DETAIL_ALL: "chi-tiet/*",
+  MANAGE_ADMIN: "quan-ly-admin",
   MANAGE_USER: "quan-ly-user",
   MANAGE_CATEGORY: "quan-ly-danh-muc",
   MANAGE_POST_USER: "quan-ly-bai-dang-user",

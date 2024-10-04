@@ -9,7 +9,6 @@ const targets = [
   { code: "Tất cả", value: "Tất cả" },
 ];
 const Overview = ({ payload, setPayload, invalidFields, setInvalidFields }) => {
-  console.log("🚀 ~ Overview ~ payload:", payload);
   const { categories } = useSelector((state) => state.app);
   const { currentData } = useSelector((state) => state.user);
 

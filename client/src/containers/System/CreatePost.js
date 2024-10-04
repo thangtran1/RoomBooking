@@ -83,7 +83,7 @@ const CreatePost = ({ isEdit }) => {
     }));
   };
   const handleSubmit = async () => {
-    const formattedTitle = payload.title.replace(/\s+/g, "");
+    const formattedTitle = payload.title.trim().replace(/\s+/g, " ");
     if (!payload.title || payload.title.trim() === "") {
       Swal.fire("Thông báo", "Tiêu đề không được để trống!", "error");
       return;
@@ -115,12 +115,7 @@ const CreatePost = ({ isEdit }) => {
       return;
     }
 
-    let priceCodeArr = getCodes(
-      +payload.priceNumber / Math.pow(10, 6),
-      prices,
-      1,
-      15
-    );
+    let priceCodeArr = getCodes(+payload.priceNumber, prices, 1, 15);
     let priceCode = priceCodeArr[priceCodeArr.length - 1]?.code;
 
     let areaCodeArr = getCodesAreas(+payload.areaNumber, areas, 0, 90);
@@ -138,6 +133,7 @@ const CreatePost = ({ isEdit }) => {
         categories?.find((item) => item.code === payload?.categoryCode)?.value
       } ${payload?.address?.split(",")[0]} `,
     };
+    console.log("🚀 ~ handleSubmit ~ finalPayload:", finalPayload);
 
     const result = validate(finalPayload, setInvalidFields);
 

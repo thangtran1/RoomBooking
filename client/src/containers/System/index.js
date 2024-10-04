@@ -9,3 +9,4 @@ export { default as ManageUser } from "./ManageUser";
 export { default as ManageCategory } from "./ManageCategory";
 export { default as ManagePostUser } from "./ManagePostUser";
 export { default as ManageContact } from "./ManageContact";
+export { default as ManageAdmin } from "./ManageAdmin";

@@ -12,6 +12,7 @@ const logos = {
 
   banner_right: require("../assets/banner-right.jpg"),
   banner_left: require("../assets/banner-left.jpg"),
+  image_noon: require("../assets/no_image.jpg"),
 };
 
 export default logos;

@@ -25,11 +25,11 @@ const Help = ({ visible, onClose }) => {
                 <p>{item.phone}</p>
                 <a
                   className="cursor-pointer"
-                  href="{item.zalo}"
+                  href={`https://zalo.me/${item?.zalo}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {item.zalo}
+                  {`Zalo: ${item.zalo}`}
                 </a>
               </div>
             );

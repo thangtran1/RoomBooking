@@ -29,13 +29,11 @@ const Login = () => {
 
   const onFinish = (values) => {
     const finalPayload = {
-      phone: values.phone,
-      email: values.email,
+      identifier: values.identifier,
       password: values.password,
     };
 
     if (isRegister) {
-      // Thêm trường name vào finalPayload nếu đang đăng ký
       finalPayload.name = values.name;
 
       dispatch(actions.register(finalPayload)).then((res) => {
@@ -70,22 +68,17 @@ const Login = () => {
     return Promise.resolve();
   };
 
-  const validateEmail = (rule, value) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!value || !emailRegex.test(value)) {
-      return Promise.reject(new Error("Email không hợp lệ"));
-    }
-    return Promise.resolve();
-  };
-
-  const validatePhoneNumber = (rule, value) => {
+  const validateIdentifier = (rule, value) => {
     const trimmedValue = value?.trim();
     if (!trimmedValue) {
-      return Promise.reject(new Error("Số điện thoại không hợp lệ"));
+      return Promise.reject(new Error("Email hoặc số điện thoại không hợp lệ"));
     }
-    const regex = /^(0[1-9]{1}[0-9]{8}|84[1-9]{1}[0-9]{8})$/;
-    if (!regex.test(trimmedValue)) {
-      return Promise.reject(new Error("Số điện thoại không hợp lệ"));
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(0[1-9]{1}[0-9]{8}|84[1-9]{1}[0-9]{8})$/;
+
+    if (!emailRegex.test(trimmedValue) && !phoneRegex.test(trimmedValue)) {
+      return Promise.reject(new Error("Email hoặc số điện thoại không hợp lệ"));
     }
     return Promise.resolve();
   };
@@ -113,19 +106,14 @@ const Login = () => {
           )}
 
           <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ validator: validateEmail }]}
+            name="identifier"
+            label="Email hoặc Số Điện Thoại"
+            rules={[{ validator: validateIdentifier }]}
           >
-            <Input autoComplete="username" />
-          </Form.Item>
-
-          <Form.Item
-            name="phone"
-            label="Số Điện Thoại"
-            rules={[{ validator: validatePhoneNumber }]}
-          >
-            <Input autoComplete="username" />
+            <Input
+              autoComplete="username"
+              placeholder="Email hoặc số điện thoại"
+            />
           </Form.Item>
 
           <Form.Item
@@ -136,7 +124,10 @@ const Login = () => {
               { min: 6, message: "Mật khẩu phải có tối thiểu 6 kí tự" },
             ]}
           >
-            <Input.Password autoComplete="current-password" />
+            <Input.Password
+              autoComplete="current-password"
+              placeholder="Mật khẩu"
+            />
           </Form.Item>
 
           <Form.Item>

@@ -4,9 +4,9 @@ import { useSearchParams } from "react-router-dom";
 import instance from "../../axiosConfig";
 import { Item } from "../../components";
 import { getPostsLimit } from "../../store/actions/post";
+import moment from "moment";
 
 const List = ({ categoryCode, posts }) => {
-  console.log("🚀 ~ List ~ posts:", posts);
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const [sort, setSort] = useState(0);
@@ -43,16 +43,27 @@ const List = ({ categoryCode, posts }) => {
     dispatch(getPostsLimit(searchParamsObject));
   }, [searchParams, categoryCode, sort, dispatch]);
 
-  // Sắp xếp posts dựa trên trường createdAt
   const sortedPosts =
     posts
       ?.filter((item) => item?.status === "approved")
       .sort((a, b) => {
         const dateA = new Date(a.createdAt);
         const dateB = new Date(b.createdAt);
-        return sort === 1 ? dateB - dateA : dateA - dateB; // Sắp xếp mới nhất hoặc mặc định
+        return sort === 1 ? dateB - dateA : dateA - dateB;
       }) || [];
-
+  //////
+  const array = [
+    { date: "2018-05-11" },
+    { date: "2018-05-12" },
+    { date: "2018-05-10" },
+  ];
+  const sortedArray = array.sort(
+    (a, b) =>
+      new moment(a.date).format("YYYYMMDD") -
+      new moment(b.date).format("YYYYMMDD")
+  );
+  console.log(sortedArray);
+  ////////////
   return (
     <div className="w-full p-2 bg-white shadow-md rounded-md px-5">
       <div className="flex items-center justify-between my-3">
