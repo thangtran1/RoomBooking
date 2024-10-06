@@ -34,7 +34,7 @@ const Login = () => {
     };
 
     if (isRegister) {
-      finalPayload.name = values.name;
+      finalPayload.name = values.name; // Vẫn giữ trường name
 
       dispatch(actions.register(finalPayload)).then((res) => {
         if (res.success) {

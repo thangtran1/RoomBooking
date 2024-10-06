@@ -9,8 +9,7 @@ const { Op } = require("sequelize");
 const hashPassword = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(12));
 export const registerService = ({
-  phone,
-  email,
+  identifier,
   password,
   name,
   zalo,
@@ -19,23 +18,26 @@ export const registerService = ({
 }) =>
   new Promise(async (resolve, reject) => {
     try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const isEmail = emailRegex.test(identifier);
+
       const existingUser = await db.User.findOne({
         where: {
-          [Op.or]: [{ phone }, { email }],
+          [Op.or]: [isEmail ? { email: identifier } : { phone: identifier }],
         },
       });
 
       if (existingUser) {
         return resolve({
           err: 1,
-          msg: "Phone number or email has been already used!",
+          msg: "Số điện thoại hoặc email đã được sử dụng!",
           token: null,
         });
       }
 
       const newUser = await db.User.create({
-        phone,
-        email,
+        phone: isEmail ? null : identifier,
+        email: isEmail ? identifier : null,
         name,
         zalo,
         fbUrl,
@@ -55,7 +57,7 @@ export const registerService = ({
 
       resolve({
         err: 0,
-        msg: "Register is successful!",
+        msg: "Đăng ký thành công!",
         token,
       });
     } catch (e) {

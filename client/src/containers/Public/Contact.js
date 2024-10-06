@@ -40,7 +40,6 @@ const Contact = () => {
         "Phản hồi của bạn đã được chúng tôi ghi nhận",
         "success"
       ).then(() => {
-        // Reset form sau khi gửi thành công
         setPayload({
           name: "",
           phone: "",

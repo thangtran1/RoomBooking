@@ -1,13 +1,23 @@
 import * as authService from "../services/auth";
 
 export const register = async (req, res) => {
-  const { name, phone, email, password } = req.body;
+  const { name, identifier, password } = req.body;
   try {
-    if (!name || !phone || !email || !password)
+    if (!name || !identifier || !password)
       return res.status(400).json({
         err: 1,
         msg: "Missing Inputs!",
       });
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(0[1-9]{1}[0-9]{8}|84[1-9]{1}[0-9]{8})$/;
+
+    if (!emailRegex.test(identifier) && !phoneRegex.test(identifier)) {
+      return res.status(400).json({
+        err: 1,
+        msg: "Email hoặc số điện thoại không hợp lệ",
+      });
+    }
 
     const response = await authService.registerService(req.body);
     return res.status(200).json(response);
