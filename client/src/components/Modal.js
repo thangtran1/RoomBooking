@@ -1,8 +1,8 @@
 import { Input } from "antd";
-import React, { memo } from "react";
+import React, { memo, useRef, useEffect } from "react";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import icons from "../ultils/icons";
-
+import { useTheme } from "../ThemeContext";
 const { GrLinkPrevious } = icons;
 
 const arrPrice = [
@@ -39,6 +39,45 @@ const Modal = ({
   province,
   setProvince,
 }) => {
+  const modalRef = useRef(null);
+  const getModalTitle = () => {
+    switch (name) {
+      case "provinces":
+        return "Chọn tỉnh thành";
+      case "areas":
+        return "Chọn diện tích";
+      case "prices":
+        return "Chọn khoảng giá";
+      case "categories":
+        return "Chọn loại bất động sản";
+      default:
+        return "";
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setIsShowModal(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsShowModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [setIsShowModal]);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = Object.fromEntries([...searchParams]);
 
@@ -92,17 +131,23 @@ const Modal = ({
 
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-overlay-70 z-20 flex justify-center items-center">
-      <div className="w-2/5 h-[500px] bg-white rounded-md relative">
-        <div className="h-[45px] px-4 border-b border-gray-200 flex items-center">
+      <div
+        ref={modalRef}
+        className="w-2/5 h-[500px] bg-white rounded-md relative"
+      >
+        <div className="h-[45px] px-4 border-b border-gray-200 flex items-center justify-between bg-gray-100">
           <span
-            className="cursor-pointer"
+            className="cursor-pointer hover:bg-gray-200 p-2 rounded-full transition-colors duration-300"
             onClick={() => setIsShowModal(false)}
           >
-            <GrLinkPrevious size={24} />
+            <GrLinkPrevious size={20} />
           </span>
+          <span className="flex-grow text-center font-semibold text-lg">
+            {getModalTitle()}
+          </span>
+          <span className="w-[28px]"></span>
         </div>
 
-        {/* Hiển thị categories hoặc provinces */}
         {name === "categories" && (
           <div className="p-4 flex flex-col">
             <span className="py-2 flex gap-2 items-center border-b border-gray-200">
@@ -171,7 +216,6 @@ const Modal = ({
           </div>
         )}
 
-        {/* Hiển thị prices hoặc areas */}
         {(name === "prices" || name === "areas") && (
           <div className="p-12 py-20">
             <div className="flex gap-2">

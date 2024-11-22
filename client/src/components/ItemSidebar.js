@@ -5,6 +5,14 @@ import { useSearchParams } from "react-router-dom";
 const { GrNext } = icons;
 
 const ItemSidebar = ({ title, content, isDouble, searchParamKey }) => {
+  console.log(
+    "title, content, isDouble, searchParamKey",
+    title,
+    content,
+    isDouble,
+    searchParamKey
+  );
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const formatContent = () => {
@@ -33,7 +41,6 @@ const ItemSidebar = ({ title, content, isDouble, searchParamKey }) => {
           newParams.set("priceMin", "");
           newParams.set("priceMax", max?.replace(" triệu", "").trim());
         } else {
-          //////
           newParams.set("priceMin", min?.replace("tr", ""));
           newParams.set("priceMax", max?.replace(" triệu", ""));
         }

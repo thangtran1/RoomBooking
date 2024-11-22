@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../store/actions";
 const RelatedPost = ({ newPost }) => {
   const { newPosts, outStandingPost } = useSelector((state) => state.post);
+
   const [posts, setPosts] = useState([]);
   const dispatch = useDispatch();
 

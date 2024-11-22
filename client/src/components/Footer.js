@@ -158,7 +158,7 @@ const Footer = () => {
         </div>
       </footer>
       <div className=" p-4 font-semibold flex items-center justify-center bg-[#0045a8] w-full text-white">
-        Copyright © 2023 - 2024 PhongTroLaLaHome.com
+        Copyright © 2023 - 2024 TroMoi.com
       </div>
     </>
   );

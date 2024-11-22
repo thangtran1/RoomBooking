@@ -3,6 +3,8 @@ import anonAvatar from "../assets/anon.avatar.png";
 import icons from "../ultils/icons";
 const { BsDot, FaPhoneAlt, SiZalo } = icons;
 const BookInfor = ({ userData }) => {
+  console.log("userData", userData);
+
   return (
     <div className="w-full bg-yellow-500 rounded-md flex flex-col items-center gap-4 p-4">
       <img

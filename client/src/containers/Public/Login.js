@@ -34,7 +34,7 @@ const Login = () => {
     };
 
     if (isRegister) {
-      finalPayload.name = values.name; // Vẫn giữ trường name
+      finalPayload.name = values.name;
 
       dispatch(actions.register(finalPayload)).then((res) => {
         if (res.success) {
@@ -141,7 +141,7 @@ const Login = () => {
             <span>
               Bạn đã có tài khoản?
               <span
-                className="text-blue-500 hover:underline cursor-pointer"
+                className="text-blue-500 ml-2 hover:underline cursor-pointer"
                 onClick={() => {
                   setIsRegister(false);
                   form.resetFields();

@@ -8,11 +8,15 @@ import { getCodes, getCodesAreas } from "../../ultils/Common/getCodes";
 import { validate } from "../../ultils/Common/validateField";
 import { noteCreatedPost } from "../../ultils/constant";
 import icons from "../../ultils/icons";
+import { useRef } from "react";
 const { ImBin, AiOutlineCloudUpload } = icons;
 
 const CreatePost = ({ isEdit }) => {
   const dispatch = useDispatch();
   const { dataEdit } = useSelector((state) => state.post);
+  console.log("dataEdit", dataEdit);
+  const addressRef = useRef();
+
   const [payload, setPayload] = useState(() => {
     const initData = {
       categoryCode: dataEdit?.categoryCode || "",
@@ -105,13 +109,6 @@ const CreatePost = ({ isEdit }) => {
       ]);
     }
 
-    if (!payload.target || payload.target.trim() === "") {
-      setInvalidFields((prev) => [
-        ...prev,
-        { name: "target", message: "Đối tượng cho thuê không được để trống!" },
-      ]);
-    }
-
     let priceCodeArr = getCodes(+payload.priceNumber, prices, 1, 15);
     let priceCode = priceCodeArr[priceCodeArr.length - 1]?.code;
 
@@ -182,6 +179,9 @@ const CreatePost = ({ isEdit }) => {
       target: "",
       province: "",
     });
+    setImagesPreview([]);
+    console.log("Payload sau khi reset:", payload);
+    addressRef.current.reset();
   };
   return (
     <div className="px-6 ">
@@ -191,6 +191,7 @@ const CreatePost = ({ isEdit }) => {
       <div className="flex gap-4 ">
         <div className="py-4 flex flex-col gap-8 flex-auto">
           <Address
+            ref={addressRef}
             setInvalidFields={setInvalidFields}
             invalidFields={invalidFields}
             payload={payload}
@@ -262,7 +263,7 @@ const CreatePost = ({ isEdit }) => {
             bgColor="bg-green-600"
             textColor="text-white"
           />
-          <div className="h-[500px]"></div>
+          <div className="h-[50px]"></div>
         </div>
 
         <div className="w-[30%] flex-none pt-12">

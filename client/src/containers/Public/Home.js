@@ -93,7 +93,6 @@ const Home = () => {
           </button>
         )}
 
-        {/* Nút để mở modal Help */}
         <Button
           onClick={showModal}
           className="fixed bottom-7 right-10 bg-[#03a84e] text-white w-[65px] h-[65px] flex items-center justify-center rounded-full shadow-md"
@@ -106,7 +105,6 @@ const Home = () => {
           </div>
         </Button>
 
-        {/* Sử dụng component Help */}
         <Help visible={isModalVisible} onClose={handleCancel} />
       </div>
       <Footer />

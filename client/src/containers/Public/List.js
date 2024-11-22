@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom";
 import instance from "../../axiosConfig";
 import { Item } from "../../components";
 import { getPostsLimit } from "../../store/actions/post";
-import moment from "moment";
 
 const List = ({ categoryCode, posts }) => {
   const dispatch = useDispatch();
@@ -51,19 +50,17 @@ const List = ({ categoryCode, posts }) => {
         const dateB = new Date(b.createdAt);
         return sort === 1 ? dateB - dateA : dateA - dateB;
       }) || [];
-  //////
-  const array = [
-    { date: "2018-05-11" },
-    { date: "2018-05-12" },
-    { date: "2018-05-10" },
-  ];
-  const sortedArray = array.sort(
-    (a, b) =>
-      new moment(a.date).format("YYYYMMDD") -
-      new moment(b.date).format("YYYYMMDD")
-  );
-  console.log(sortedArray);
-  ////////////
+  // const array = [
+  //   { date: "2018-05-11" },
+  //   { date: "2018-05-12" },
+  //   { date: "2018-05-10" },
+  // ];
+  // const sortedArray = array.sort(
+  //   (a, b) =>
+  //     new moment(a.date).format("YYYYMMDD") -
+  //     new moment(b.date).format("YYYYMMDD")
+  // );
+  // console.log(sortedArray);
   return (
     <div className="w-full p-2 bg-white shadow-md rounded-md px-5">
       <div className="flex items-center justify-between my-3">

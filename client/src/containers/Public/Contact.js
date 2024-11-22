@@ -60,13 +60,13 @@ const Contact = () => {
           <h4 className="font-medium text-2xl">Thông tin liên hệ</h4>
           <span>
             Chúng tôi biết bạn có rất nhiều sự lựa chọn. Nhưng cảm ơn vì đã lựa
-            chọn PhongTroLaLaHome.Com
+            chọn TroMoi.Com
           </span>
           <span>
             <span className="font-bold">Điện thoại</span>: 0389 215 396
           </span>
           <span>
-            <span className="font-bold">Email</span>: phongtrolalahome@gmail.com
+            <span className="font-bold">Email</span>: tromoi@gmail.com
           </span>
           <span>
             <span className="font-bold">Zalo</span>: 0389 215 396

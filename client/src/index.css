@@ -8,6 +8,22 @@
     display: inline-block;
     margin-bottom: 5px;
 }
+
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+  }
+  
+  [data-theme='dark'] {
+    --bg-color: #1f2937;
+    --text-color: #ffffff;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
 /* mở trên trình duyệt nào cũm ăn css */
 input[type="range"]::-webkit-slider-runnable-track{
     -webkit-appearance: none;

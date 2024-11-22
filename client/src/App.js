@@ -1,3 +1,4 @@
+import { ThemeProvider } from "./ThemeContext";
 import { Routes, Route } from "react-router-dom";
 import {
   Home,
@@ -42,44 +43,46 @@ function App() {
     dispatch(actions.getProvinces());
   }, [dispatch]);
   return (
-    <div className=" bg-primary overflow-hidden">
-      <ToastContainer />
-      <Routes>
-        <Route path={path.HOME} element={<Home />}>
-          <Route path="*" element={<Homepage />} />
-          <Route path={path.HOME__PAGE} element={<Homepage />} />
-          <Route path={path.LOGIN} element={<Login />} />
-          <Route path={path.CHO_THUE_CAN_HO} element={<Rental />} />
-          <Route path={path.CHO_THUE_MAT_BANG} element={<Rental />} />
-          <Route path={path.NHA_TRO_THUE} element={<Rental />} />
-          <Route path={path.CHO_THUE_PHONG_TRO} element={<Rental />} />
-          <Route path={path.SEARCH} element={<SearchDetail />} />
-          <Route path={path.SAVE_NEW} element={<Like />} />
-          <Route
-            path={path.DETAIL_POST__TITLE__POSTID}
-            element={<DetailPost />}
-          />
-          <Route path={path.CONTACT} element={<Contact />} />
-          <Route path={path.DETAIL_ALL} element={<DetailPost />} />
+    <ThemeProvider>
+      <div className=" bg-primary overflow-hidden">
+        <ToastContainer />
+        <Routes>
+          <Route path={path.HOME} element={<Home />}>
+            <Route path="*" element={<Homepage />} />
+            <Route path={path.HOME__PAGE} element={<Homepage />} />
+            <Route path={path.LOGIN} element={<Login />} />
+            <Route path={path.CHO_THUE_CAN_HO} element={<Rental />} />
+            <Route path={path.CHO_THUE_MAT_BANG} element={<Rental />} />
+            <Route path={path.NHA_TRO_THUE} element={<Rental />} />
+            <Route path={path.CHO_THUE_PHONG_TRO} element={<Rental />} />
+            <Route path={path.SEARCH} element={<SearchDetail />} />
+            <Route path={path.SAVE_NEW} element={<Like />} />
+            <Route
+              path={path.DETAIL_POST__TITLE__POSTID}
+              element={<DetailPost />}
+            />
+            <Route path={path.CONTACT} element={<Contact />} />
+            <Route path={path.DETAIL_ALL} element={<DetailPost />} />
 
-          <Route
-            path={path.DETAIL_POST__TITLE__POSTID}
-            element={<DetailPost />}
-          />
-        </Route>
-        <Route path={path.SYSTEM} element={<System />}>
-          <Route path={path.CREATE_POST} element={<CreatePost />} />
-          <Route path={path.MANAGE_POST} element={<ManagePost />} />
-          <Route path={path.EDIT_ACCOUNT} element={<EditAccount />} />
-          <Route path={path.MANAGE_ADMIN} element={<ManageAdmin />} />
+            <Route
+              path={path.DETAIL_POST__TITLE__POSTID}
+              element={<DetailPost />}
+            />
+          </Route>
+          <Route path={path.SYSTEM} element={<System />}>
+            <Route path={path.CREATE_POST} element={<CreatePost />} />
+            <Route path={path.MANAGE_POST} element={<ManagePost />} />
+            <Route path={path.EDIT_ACCOUNT} element={<EditAccount />} />
+            <Route path={path.MANAGE_ADMIN} element={<ManageAdmin />} />
 
-          <Route path={path.MANAGE_USER} element={<ManageUser />} />
-          <Route path={path.MANAGE_CATEGORY} element={<ManageCategory />} />
-          <Route path={path.MANAGE_POST_USER} element={<ManagePostUser />} />
-          <Route path={path.MANAGE_CONTACT} element={<ManageContact />} />
-        </Route>
-      </Routes>
-    </div>
+            <Route path={path.MANAGE_USER} element={<ManageUser />} />
+            <Route path={path.MANAGE_CATEGORY} element={<ManageCategory />} />
+            <Route path={path.MANAGE_POST_USER} element={<ManagePostUser />} />
+            <Route path={path.MANAGE_CONTACT} element={<ManageContact />} />
+          </Route>
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }
 

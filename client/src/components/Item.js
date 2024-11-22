@@ -135,7 +135,7 @@ const Item = ({
               alt="avatar"
               className="w-[30px] h-[30px] object-cover rounded-full"
             />
-            <p>{user?.name}</p>
+            <p className="ml-2">{user?.name}</p>
           </div>
           <div className="flex items-center gap-1">
             {user?.phone ? (

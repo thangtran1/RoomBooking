@@ -19,7 +19,7 @@ export const text = {
     },
   ],
   contentSub:
-    "Đội chăm sóc khách hàng Phongtrolalahome. Chúng tôi muốn lắng nghe câu hỏi và ý kiến đóng góp từ bạn. Hãy phản hồi cho chúng tôi biết vấn đề của bạn nhé!",
+    "Đội chăm sóc khách hàng TroMoi. Chúng tôi muốn lắng nghe câu hỏi và ý kiến đóng góp từ bạn. Hãy phản hồi cho chúng tôi biết vấn đề của bạn nhé!",
   contactSub: [
     {
       text: "NHÂN VIÊN HỖ TRỢ",

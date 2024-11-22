@@ -23,14 +23,18 @@ const Help = ({ visible, onClose }) => {
                 <h3 className="text-black font-semibold">{item.text}</h3>
                 <h3 className="text-red-600 font-medium">{item.name}</h3>
                 <p>{item.phone}</p>
-                <a
-                  className="cursor-pointer"
-                  href={`https://zalo.me/${item?.zalo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {`Zalo: ${item.zalo}`}
-                </a>
+
+                <p>
+                  Zalo:
+                  <a
+                    className="cursor-pointer text-blue-500 hover:underline ml-1"
+                    href={`https://zalo.me/${item?.zalo}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.zalo}
+                  </a>
+                </p>
               </div>
             );
           })}

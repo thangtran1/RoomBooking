@@ -8,7 +8,6 @@ const { TfiStar } = icons;
 const star = [1, 2, 3, 4, 5];
 const Intro = () => {
   const { categories } = useSelector((state) => state.app);
-
   return (
     <div className="w-4/5  bg-white rounded-md shadow-md p-4 flex flex-col gap-4 justify-center items-center ">
       <h3 className="font-bold text-lg">{text.title}</h3>
@@ -19,7 +18,7 @@ const Intro = () => {
             categories.map((item) => {
               return (
                 <Link
-                  to={`/?categoryCode=${item.code}`} // Sửa lại đây để thêm categoryCode vào query params
+                  to={`/?categoryCode=${item.code}`}
                   key={item.code}
                   className="text-blue-600 font-medium hover:text-orange-600"
                 >

@@ -5,6 +5,8 @@ const logos = {
   logoFooter4: require("../assets/logo_footer4.png"),
   logoFooter5: require("../assets/logo.png"),
 
+  logoHead: require("../assets/logoHead.png"),
+
   logo1: require("../assets/logo1.png"),
   logo2: require("../assets/logo2.png"),
   logo3: require("../assets/logo3.png"),
