@@ -56,7 +56,11 @@ const Address = forwardRef(
       const fetchPublicProvince = async () => {
         const response = await apiGetPublicProvinces();
         if (response.status === 200) {
-          setProvinces(response?.data?.results);
+          const mapped = response.data.map((item) => ({
+            province_id: item.code.toString(),
+            province_name: item.name,
+          }));
+          setProvinces(mapped);
         }
       };
       fetchPublicProvince();
@@ -65,14 +69,30 @@ const Address = forwardRef(
     useEffect(() => {
       setDistrict("");
       const fetchPublicDistrict = async () => {
-        const response = await apiGetPublicDistrict(province);
-        if (response.status === 200) {
-          setDistricts(response.data?.results);
+        try {
+          const response = await apiGetPublicDistrict(province);
+          if (response.status === 200) {
+            const mappedDistricts = (response.data.districts || []).map(
+              (item) => ({
+                district_id: item.code.toString(),
+                district_name: item.name,
+              })
+            );
+            setDistricts(mappedDistricts);
+          }
+        } catch (error) {
+          console.error("Lỗi lấy quận/huyện:", error);
+          setDistricts([]);
         }
       };
-      province && fetchPublicDistrict();
-      !province ? setReset(true) : setReset(false);
-      !province && setDistricts([]);
+
+      if (province) {
+        fetchPublicDistrict();
+        setReset(false);
+      } else {
+        setReset(true);
+        setDistricts([]);
+      }
     }, [province]);
 
     useEffect(() => {
